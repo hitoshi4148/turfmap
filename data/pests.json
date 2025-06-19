@@ -1,0 +1,116 @@
+{
+  "pests": [
+    {
+      "id": "shibatuga",
+      "name": "シバツトガ",
+      "base_temp": 10.0,
+      "description": "芝生の主要な害虫。発育開始温度は10℃。",
+      "thresholds": [
+        {
+          "value": 0,
+          "label": "低リスク",
+          "color": "#FFFFFF"
+        },
+        {
+          "value": 211,
+          "label": "発生ピーク",
+          "color": "#FFFF00"
+        },
+        {
+          "value": 541,
+          "label": "第二世代",
+          "color": "#FFA500"
+        },
+        {
+          "value": 730,
+          "label": "第三世代以降",
+          "color": "#FF0000"
+        },
+        {
+          "value": 5000,
+          "label": "リスク継続",
+          "color": "#FF0000"
+        }
+      ]
+    },
+    {
+      "id": "sujikiri",
+      "name": "スジキリヨトウ",
+      "base_temp": 10.0,
+      "description": "芝生の葉を食害する害虫。発育開始温度は10℃。",
+      "thresholds": [
+        {
+          "value": 0,
+          "label": "低リスク",
+          "color": "#FFFFFF"
+        },
+        {
+          "value": 353,
+          "label": "幼虫",
+          "color": "#FFFF00"
+        },
+        {
+          "value": 643,
+          "label": "第二世代",
+          "color": "#FF4500"
+        },
+        {
+          "value": 1286,
+          "label": "第三世代以降",
+          "color": "#FF0000"
+        },
+        {
+          "value": 5000,
+          "label": "リクス継続",
+          "color": "#FF0000"
+        }
+      ]
+    },
+    {
+      "id": "mamekogane",
+      "name": "マメコガネ",
+      "base_temp": 10.0,
+      "description": "芝生の根を食害する害虫。発育開始温度は10℃。",
+      "thresholds": [
+        {
+          "value": 0,
+          "label": "低リスク",
+          "color": "#FFFFFF"
+        },
+        {
+          "value": 510,
+          "label": "成長羽化",
+          "color": "#FF0000"
+        },
+        {
+          "value": 5000,
+          "label": "リクス継続",
+          "color": "#FF0000"
+        }
+      ]
+    },
+    {
+      "id": "tamanayaga",
+      "name": "タマナヤガ",
+      "base_temp": 5.6,
+      "description": "芝生の根を食害する害虫。発育開始温度は5.6℃。",
+      "thresholds": [
+        {
+          "value": 0,
+          "label": "低リスク",
+          "color": "#FFFFFF"
+        },
+        {
+          "value": 387,
+          "label": "幼虫活動期",
+          "color": "#FF0000"
+        },
+        {
+          "value": 5000,
+          "label": "リクス継続",
+          "color": "#FF0000"
+        }
+      ]
+    }
+  ]
+} 
