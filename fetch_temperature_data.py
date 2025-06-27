@@ -10,6 +10,8 @@ import argparse
 # ログの設定
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+print("=== スクリプトimport直後 ===", flush=True)
+
 def fetch_temperature_data(start_date_str=None, end_date_str=None):
     """NASA POWER APIから気温データを取得し、データベースに保存する"""
     print("fetch_temperature_data.py: スクリプト開始")
