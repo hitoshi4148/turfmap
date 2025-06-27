@@ -58,6 +58,7 @@ def main():
         # 1. 気温データ取得
         logging.info("=== 気温データ取得開始 ===")
         try:
+            logging.info("fetch_temperature_data.py 実行直前")
             result = subprocess.run([
                 'python', 'fetch_temperature_data.py', 
                 '--start', next_date_str, 
@@ -69,7 +70,8 @@ def main():
             check=True
             )
             logging.info("気温データ取得完了")
-            logging.debug(f"気温データ取得出力: {result.stdout}")
+            logging.info(f"気温データ取得 標準出力: {result.stdout}")
+            logging.info(f"気温データ取得 標準エラー: {result.stderr}")
         except subprocess.CalledProcessError as e:
             logging.error(f"気温データ取得エラー: {e}")
             logging.error(f"エラー出力: {e.stderr}")
@@ -78,6 +80,7 @@ def main():
         # 2. 積算温度計算
         logging.info("=== 積算温度計算開始 ===")
         try:
+            logging.info("calculate_accumulated_temperature_optimized.py 実行直前")
             result = subprocess.run([
                 'python', 'calculate_accumulated_temperature_optimized.py'
             ], 
@@ -87,7 +90,8 @@ def main():
             check=True
             )
             logging.info("積算温度計算完了")
-            logging.debug(f"積算温度計算出力: {result.stdout}")
+            logging.info(f"積算温度計算 標準出力: {result.stdout}")
+            logging.info(f"積算温度計算 標準エラー: {result.stderr}")
         except subprocess.CalledProcessError as e:
             logging.error(f"積算温度計算エラー: {e}")
             logging.error(f"エラー出力: {e.stderr}")
@@ -96,6 +100,7 @@ def main():
         # 3. 害虫マップ生成
         logging.info("=== 害虫マップ生成開始 ===")
         try:
+            logging.info("map_pest_risk_updated.py 実行直前")
             result = subprocess.run([
                 'python', 'map_pest_risk_updated.py'
             ], 
@@ -105,7 +110,8 @@ def main():
             check=True
             )
             logging.info("害虫マップ生成完了")
-            logging.debug(f"害虫マップ生成出力: {result.stdout}")
+            logging.info(f"害虫マップ生成 標準出力: {result.stdout}")
+            logging.info(f"害虫マップ生成 標準エラー: {result.stderr}")
         except subprocess.CalledProcessError as e:
             logging.error(f"害虫マップ生成エラー: {e}")
             logging.error(f"エラー出力: {e.stderr}")
