@@ -38,3 +38,4 @@ jobs:
           git add .
           git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update: Daily temperature data and pest maps"
           git push 
+          
