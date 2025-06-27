@@ -9,7 +9,7 @@ plt.rcParams['font.family'] = 'Meiryo'  # 他に 'Yu Gothic', 'Meiryo' なども
 
 from datetime import datetime
 
-def fetch_nasa_temp_data(lat, lon, start_date, end_date):
+def fetch_nasa_temp_data(lat, lon, start_date, end_date, timeout=15):
     url = (
         "https://power.larc.nasa.gov/api/temporal/daily/point"
         f"?parameters=T2M"
@@ -21,7 +21,9 @@ def fetch_nasa_temp_data(lat, lon, start_date, end_date):
         f"&format=JSON"
     )
     try:
-        response = requests.get(url)
+        print(f"APIリクエスト送信: {url}")
+        response = requests.get(url, timeout=timeout)
+        print(f"APIレスポンス受信: status={response.status_code}")
         if response.status_code == 404:
             print(f"Error: No data available for the specified parameters")
             print(f"URL: {url}")
