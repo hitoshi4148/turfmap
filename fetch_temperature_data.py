@@ -35,7 +35,7 @@ def fetch_temperature_data(start_date_str=None, end_date_str=None):
 
         # データ取得期間の設定
         if start_date_str is None or end_date_str is None:
-            start_date = datetime(2023, 1, 1)  # 2023年1月1日から
+            start_date = datetime(2025, 1, 1)  # 2025年1月1日から
             end_date = datetime.now() - timedelta(days=1)  # 昨日まで
             start_date_str = start_date.strftime('%Y%m%d')
             end_date_str = end_date.strftime('%Y%m%d')
