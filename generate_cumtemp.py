@@ -9,7 +9,7 @@ plt.rcParams['font.family'] = 'Meiryo'  # 他に 'Yu Gothic', 'Meiryo' なども
 
 from datetime import datetime
 
-def fetch_nasa_temp_data(lat, lon, start_date, end_date, timeout=15):
+def fetch_nasa_temp_data(lat, lon, start_date, end_date, timeout=30):
     url = (
         "https://power.larc.nasa.gov/api/temporal/daily/point"
         f"?parameters=T2M"
@@ -35,12 +35,21 @@ def fetch_nasa_temp_data(lat, lon, start_date, end_date, timeout=15):
         df = pd.DataFrame(records.items(), columns=["date", "temp"])
         df["date"] = pd.to_datetime(df["date"])
         df["temp"] = df["temp"].astype(float)
+        print(f"Successfully fetched {len(df)} temperature records for lat={lat}, lon={lon}")
         return df
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching data: {str(e)}")
+    except requests.exceptions.Timeout as e:
+        print(f"Timeout error fetching data for lat={lat}, lon={lon}: {str(e)}")
         print(f"URL: {url}")
-        if hasattr(e.response, 'text'):
+        return None
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching data for lat={lat}, lon={lon}: {str(e)}")
+        print(f"URL: {url}")
+        if hasattr(e, 'response') and e.response is not None:
             print(f"Response: {e.response.text}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error fetching data for lat={lat}, lon={lon}: {str(e)}")
+        print(f"URL: {url}")
         return None
 
 def calculate_cumtemp(df, base_temp=10):
