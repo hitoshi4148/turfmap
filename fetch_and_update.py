@@ -68,14 +68,25 @@ def main():
             capture_output=True,
             text=True,
             check=True,
-            timeout=3600  # 60秒でタイムアウト
+            timeout=18000  # 5時間でタイムアウト（GitHub Actionsの制限を考慮）
             )
             logging.info("気温データ取得完了")
             logging.info(f"気温データ取得 標準出力: {result.stdout}")
-            logging.info(f"気温データ取得 標準エラー: {result.stderr}")
+            if result.stderr:
+                logging.warning(f"気温データ取得 標準エラー: {result.stderr}")
+        except subprocess.TimeoutExpired as e:
+            logging.error(f"気温データ取得タイムアウト: {e}")
+            logging.error("プロセスを強制終了します")
+            if e.stdout:
+                logging.info(f"タイムアウト時の標準出力: {e.stdout}")
+            if e.stderr:
+                logging.error(f"タイムアウト時の標準エラー: {e.stderr}")
+            raise
         except subprocess.CalledProcessError as e:
             logging.error(f"気温データ取得エラー: {e}")
             logging.error(f"エラー出力: {e.stderr}")
+            if e.stdout:
+                logging.info(f"エラー時の標準出力: {e.stdout}")
             raise
         
         # 2. 積算温度計算
@@ -88,14 +99,25 @@ def main():
             cwd=os.path.dirname(__file__),
             capture_output=True,
             text=True,
-            check=True
+            check=True,
+            timeout=7200  # 2時間でタイムアウト
             )
             logging.info("積算温度計算完了")
             logging.info(f"積算温度計算 標準出力: {result.stdout}")
-            logging.info(f"積算温度計算 標準エラー: {result.stderr}")
+            if result.stderr:
+                logging.warning(f"積算温度計算 標準エラー: {result.stderr}")
+        except subprocess.TimeoutExpired as e:
+            logging.error(f"積算温度計算タイムアウト: {e}")
+            if e.stdout:
+                logging.info(f"タイムアウト時の標準出力: {e.stdout}")
+            if e.stderr:
+                logging.error(f"タイムアウト時の標準エラー: {e.stderr}")
+            raise
         except subprocess.CalledProcessError as e:
             logging.error(f"積算温度計算エラー: {e}")
             logging.error(f"エラー出力: {e.stderr}")
+            if e.stdout:
+                logging.info(f"エラー時の標準出力: {e.stdout}")
             raise
         
         # 3. 害虫マップ生成
@@ -108,14 +130,25 @@ def main():
             cwd=os.path.dirname(__file__),
             capture_output=True,
             text=True,
-            check=True
+            check=True,
+            timeout=3600  # 1時間でタイムアウト
             )
             logging.info("害虫マップ生成完了")
             logging.info(f"害虫マップ生成 標準出力: {result.stdout}")
-            logging.info(f"害虫マップ生成 標準エラー: {result.stderr}")
+            if result.stderr:
+                logging.warning(f"害虫マップ生成 標準エラー: {result.stderr}")
+        except subprocess.TimeoutExpired as e:
+            logging.error(f"害虫マップ生成タイムアウト: {e}")
+            if e.stdout:
+                logging.info(f"タイムアウト時の標準出力: {e.stdout}")
+            if e.stderr:
+                logging.error(f"タイムアウト時の標準エラー: {e.stderr}")
+            raise
         except subprocess.CalledProcessError as e:
             logging.error(f"害虫マップ生成エラー: {e}")
             logging.error(f"エラー出力: {e.stderr}")
+            if e.stdout:
+                logging.info(f"エラー時の標準出力: {e.stdout}")
             raise
         
         logging.info("=== cron fetch_and_update 正常完了 ===")
