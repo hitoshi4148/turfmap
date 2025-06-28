@@ -1,0 +1,41 @@
+name: Daily Agromap Update
+
+on:
+  schedule:
+    # 毎日午前2時UTC（日本時間午前11時）に実行
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # 手動実行も可能
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r scripts/requirements.txt
+          
+      - name: Run daily update
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          cd scripts
+          python fetch_and_update.py
+          
+      - name: Commit and push updated files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update: Daily temperature data and pest maps"
+          git push 
+          
