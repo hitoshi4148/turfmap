@@ -68,7 +68,7 @@ def main():
             capture_output=True,
             text=True,
             check=True,
-            timeout=60  # 60秒でタイムアウト
+            timeout=3600  # 60秒でタイムアウト
             )
             logging.info("気温データ取得完了")
             logging.info(f"気温データ取得 標準出力: {result.stdout}")
