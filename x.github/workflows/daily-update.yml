@@ -9,7 +9,7 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 360  # 6時間でタイムアウト
+    timeout-minutes: 480  # 8時間でタイムアウト（積算温度計算の長時間処理に対応）
     
     steps:
       - name: Checkout repository
