@@ -24,7 +24,14 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r turfmap/requirements.txt
-          
+
+      - name: Initialize DB schema and indexes
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          cd turfmap
+          python -c "from database import Database; Database()"
+
       - name: Run daily update
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -68,6 +75,6 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update: Daily temperature data and pest maps"
+          git commit -m "Auto-update: Daily temperature data and pest maps"
           git push 
           
