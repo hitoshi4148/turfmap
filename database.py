@@ -85,6 +85,10 @@ class Database:
                         UNIQUE(date, latitude, longitude)
                     )
                     ''')
+                    # 複合インデックス追加
+                    cur.execute('''
+                    CREATE INDEX IF NOT EXISTS idx_temp_lat_lon_date ON temperature_data (latitude, longitude, date)
+                    ''')
                     # grid_points テーブル
                     cur.execute('''
                     CREATE TABLE IF NOT EXISTS grid_points (
@@ -161,6 +165,68 @@ class Database:
             logger.error(f"Traceback: {traceback.format_exc()}")
             raise
 
+    def bulk_insert_grid_points(self, grid_data):
+        """グリッドポイントをバルクインサート"""
+        try:
+            logger.info(f"Bulk inserting {len(grid_data)} grid points")
+            with get_connection() as conn:
+                with conn.cursor() as cur:
+                    # psycopg2.extras.execute_valuesを使用してバルクインサート
+                    from psycopg2.extras import execute_values
+                    
+                    # データをタプルのリストに変換
+                    values = [(lat, lon, None) for lat, lon in grid_data]
+                    
+                    execute_values(
+                        cur,
+                        '''
+                        INSERT INTO grid_points (latitude, longitude, region_name)
+                        VALUES %s
+                        ON CONFLICT (latitude, longitude) DO NOTHING
+                        ''',
+                        values,
+                        template=None,
+                        page_size=100
+                    )
+                    conn.commit()
+                    logger.info(f"Successfully bulk inserted {len(grid_data)} grid points")
+        except Exception as e:
+            logger.error(f"Error bulk inserting grid points: {str(e)}")
+            logger.error(f"Error type: {type(e)}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            raise
+
+    def bulk_insert_temperature_data(self, temperature_data):
+        """気温データをバルクインサート"""
+        try:
+            logger.info(f"Bulk inserting {len(temperature_data)} temperature records")
+            with get_connection() as conn:
+                with conn.cursor() as cur:
+                    # psycopg2.extras.execute_valuesを使用してバルクインサート
+                    from psycopg2.extras import execute_values
+                    
+                    # データは既にタプルのリスト形式 (date, lat, lon, temp, source)
+                    execute_values(
+                        cur,
+                        '''
+                        INSERT INTO temperature_data (date, latitude, longitude, temperature, source)
+                        VALUES %s
+                        ON CONFLICT (date, latitude, longitude) DO NOTHING
+                        ''',
+                        temperature_data,
+                        template=None,
+                        page_size=1000
+                    )
+                    conn.commit()
+                    logger.info(f"Successfully bulk inserted {len(temperature_data)} temperature records")
+        except Exception as e:
+            logger.error(f"Error bulk inserting temperature data: {str(e)}")
+            logger.error(f"Error type: {type(e)}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            raise
+
     def initialize_pest_data(self):
         try:
             with get_connection() as conn:
@@ -169,7 +235,8 @@ class Database:
                     cur.execute('DELETE FROM pests')
                     logger.debug("Cleared existing pest data")
                     # pests.jsonからデータを読み込み
-                    pests_file = os.path.join('data', 'pests.json')
+                    script_dir = os.path.dirname(os.path.abspath(__file__))
+                    pests_file = os.path.join(script_dir, 'data', 'pests.json')
                     if os.path.exists(pests_file):
                         with open(pests_file, 'r', encoding='utf-8') as f:
                             pests_data = json.load(f)
@@ -322,7 +389,4 @@ class Database:
                     return row['max_date'] if row and row['max_date'] else None
         except Exception as e:
             logger.error(f"Error fetching latest accumulated temperature date: {str(e)}")
-            return None
-
-# データベースインスタンスの作成とエクスポート
-db = Database() 
+            return None 
