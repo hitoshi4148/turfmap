@@ -89,8 +89,12 @@ def main():
                 logging.info(f"エラー時の標準出力: {e.stdout}")
             raise
         
-        # 2. 積算温度計算
-        logging.info("=== 積算温度計算開始 ===")
+        # 2. 積算温度計算（一時的にスキップ）
+        logging.info("=== 積算温度計算をスキップします ===")
+        logging.info("積算温度計算は後で手動実行してください")
+        
+        # 積算温度計算をスキップする場合のコメントアウト
+        """
         try:
             logging.info("calculate_accumulated_temperature_optimized.py 実行直前")
             result = subprocess.run([
@@ -100,7 +104,7 @@ def main():
             capture_output=True,
             text=True,
             check=True,
-            timeout=7200  # 2時間でタイムアウト
+            timeout=1800  # 30分でタイムアウト（データベース内計算により高速化）
             )
             logging.info("積算温度計算完了")
             logging.info(f"積算温度計算 標準出力: {result.stdout}")
@@ -119,9 +123,14 @@ def main():
             if e.stdout:
                 logging.info(f"エラー時の標準出力: {e.stdout}")
             raise
+        """
         
-        # 3. 害虫マップ生成
-        logging.info("=== 害虫マップ生成開始 ===")
+        # 3. 害虫マップ生成（一時的にスキップ）
+        logging.info("=== 害虫マップ生成をスキップします ===")
+        logging.info("害虫マップ生成は後で手動実行してください")
+        
+        # 害虫マップ生成をスキップする場合のコメントアウト
+        """
         try:
             logging.info("map_pest_risk_updated.py 実行直前")
             result = subprocess.run([
@@ -150,6 +159,7 @@ def main():
             if e.stdout:
                 logging.info(f"エラー時の標準出力: {e.stdout}")
             raise
+        """
         
         logging.info("=== cron fetch_and_update 正常完了 ===")
         

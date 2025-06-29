@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.colors import LinearSegmentedColormap
 import numpy as np
-from database import Database
+from database import Database, get_connection
 from datetime import datetime
 
 def load_pests_from_database():
@@ -92,7 +92,7 @@ def generate_pest_map(pest):
         latest_date = datetime.now().strftime('%Y-%m-%d')
         
         # 積算温度データを取得（最新日付のみ）
-        with db._Database__get_connection() as conn:
+        with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute('''
                     SELECT latitude, longitude, accumulated_temp

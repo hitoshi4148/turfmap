@@ -7,7 +7,7 @@ import sqlite3
 import os
 from dotenv import load_dotenv
 import json
-from database import db
+from database import Database
 
 # 環境変数の読み込み
 load_dotenv()
@@ -23,6 +23,9 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 
 # データベースの設定
 DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://postgres:postgres@localhost:5432/agromap')
+
+# データベースインスタンスの作成
+db = Database()
 
 def load_weather_data():
     """気象データを読み込む"""
