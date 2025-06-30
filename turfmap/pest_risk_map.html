@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_8bf4ad6a1de12afcf56040ae3027587f {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_8bf4ad6a1de12afcf56040ae3027587f" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_8bf4ad6a1de12afcf56040ae3027587f = L.map(
+                "map_8bf4ad6a1de12afcf56040ae3027587f",
+                {
+                    center: [36.0, 138.0],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 5,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_8794b3e66e3d01eb484cbda2acc94e55 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+        
+    
+            tile_layer_8794b3e66e3d01eb484cbda2acc94e55.addTo(map_8bf4ad6a1de12afcf56040ae3027587f);
+        
+    
+            var circle_marker_0f890c8d4f1a94fd2d0ad5aeb6cd116d = L.circleMarker(
+                [43.06, 141.35],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(map_8bf4ad6a1de12afcf56040ae3027587f);
+        
+    
+        var popup_6cdc360936e5da96a158dc396b60ac05 = L.popup({"maxWidth": 350});
+
+        
+            
+                var html_017119bed9b3463810f403b038739c44 = $(`<div id="html_017119bed9b3463810f403b038739c44" style="width: 100.0%; height: 100.0%;">     <div style="font-size:14px;">     <b>札幌</b><br>     積算温度：200.0℃日<br>     リスクなし     </div>     </div>`)[0];
+                popup_6cdc360936e5da96a158dc396b60ac05.setContent(html_017119bed9b3463810f403b038739c44);
+            
+        
+
+        circle_marker_0f890c8d4f1a94fd2d0ad5aeb6cd116d.bindPopup(popup_6cdc360936e5da96a158dc396b60ac05)
+        ;
+
+        
+    
+    
+            var circle_marker_4af2826a0bb20ad8eb6e32bf37154b2e = L.circleMarker(
+                [38.26, 140.87],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(map_8bf4ad6a1de12afcf56040ae3027587f);
+        
+    
+        var popup_dd374bd11d9c01f2d4c0a245ef5f7cfb = L.popup({"maxWidth": 350});
+
+        
+            
+                var html_f89e4d27a8bf901fd3d96805cf97a4ee = $(`<div id="html_f89e4d27a8bf901fd3d96805cf97a4ee" style="width: 100.0%; height: 100.0%;">     <div style="font-size:14px;">     <b>仙台</b><br>     積算温度：300.0℃日<br>     <ul><li>シバツトガ：リスクあり</li></ul>     </div>     </div>`)[0];
+                popup_dd374bd11d9c01f2d4c0a245ef5f7cfb.setContent(html_f89e4d27a8bf901fd3d96805cf97a4ee);
+            
+        
+
+        circle_marker_4af2826a0bb20ad8eb6e32bf37154b2e.bindPopup(popup_dd374bd11d9c01f2d4c0a245ef5f7cfb)
+        ;
+
+        
+    
+    
+            var circle_marker_6404285178d2ea4939fc7df9a14250a9 = L.circleMarker(
+                [35.68, 139.76],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(map_8bf4ad6a1de12afcf56040ae3027587f);
+        
+    
+        var popup_d8c2ecb3cea97ab05514d1e4cc0de352 = L.popup({"maxWidth": 350});
+
+        
+            
+                var html_842974cbd2407316d3df2f925b205f25 = $(`<div id="html_842974cbd2407316d3df2f925b205f25" style="width: 100.0%; height: 100.0%;">     <div style="font-size:14px;">     <b>東京</b><br>     積算温度：400.0℃日<br>     <ul><li>シバツトガ：リスクあり</li><li>スジキリヨウトウ：リスクあり</li></ul>     </div>     </div>`)[0];
+                popup_d8c2ecb3cea97ab05514d1e4cc0de352.setContent(html_842974cbd2407316d3df2f925b205f25);
+            
+        
+
+        circle_marker_6404285178d2ea4939fc7df9a14250a9.bindPopup(popup_d8c2ecb3cea97ab05514d1e4cc0de352)
+        ;
+
+        
+    
+    
+            var circle_marker_3aa5b462ee88695b42bc5627c7e97f81 = L.circleMarker(
+                [34.69, 135.5],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(map_8bf4ad6a1de12afcf56040ae3027587f);
+        
+    
+        var popup_ac403d6df84b9dd25befa98ebefe357e = L.popup({"maxWidth": 350});
+
+        
+            
+                var html_3b921e4b9090fcede785ec4ef6b00c18 = $(`<div id="html_3b921e4b9090fcede785ec4ef6b00c18" style="width: 100.0%; height: 100.0%;">     <div style="font-size:14px;">     <b>大阪</b><br>     積算温度：500.0℃日<br>     <ul><li>シバツトガ：リスクあり</li><li>スジキリヨウトウ：リスクあり</li></ul>     </div>     </div>`)[0];
+                popup_ac403d6df84b9dd25befa98ebefe357e.setContent(html_3b921e4b9090fcede785ec4ef6b00c18);
+            
+        
+
+        circle_marker_3aa5b462ee88695b42bc5627c7e97f81.bindPopup(popup_ac403d6df84b9dd25befa98ebefe357e)
+        ;
+
+        
+    
+    
+            var circle_marker_894660baf3d04c91416bde9dca494750 = L.circleMarker(
+                [33.59, 130.4],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(map_8bf4ad6a1de12afcf56040ae3027587f);
+        
+    
+        var popup_77ec785724a76c0bda8177267f53cb8b = L.popup({"maxWidth": 350});
+
+        
+            
+                var html_ef39ec0708c00b39391391d30b880b22 = $(`<div id="html_ef39ec0708c00b39391391d30b880b22" style="width: 100.0%; height: 100.0%;">     <div style="font-size:14px;">     <b>福岡</b><br>     積算温度：550.0℃日<br>     <ul><li>シバツトガ：リスクあり</li><li>スジキリヨウトウ：リスクあり</li><li>マメコガネ：リスクあり</li></ul>     </div>     </div>`)[0];
+                popup_77ec785724a76c0bda8177267f53cb8b.setContent(html_ef39ec0708c00b39391391d30b880b22);
+            
+        
+
+        circle_marker_894660baf3d04c91416bde9dca494750.bindPopup(popup_77ec785724a76c0bda8177267f53cb8b)
+        ;
+
+        
+    
+</script>
+</html>
