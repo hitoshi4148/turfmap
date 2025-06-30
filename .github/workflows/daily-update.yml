@@ -18,16 +18,16 @@ jobs:
           python-version: '3.9'
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
+            pip install --upgrade pip
+            pip install -r requirements.txt
       - name: Show working directory and files
         run: |
-          pwd
-          ls -l
-          ls -l turfmap || true
+            pwd
+            ls -l
+            ls -l turfmap || true
       - name: Run daily update
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python fetch_and_update.py
           
       - name: Commit and push updated files
