@@ -27,6 +27,11 @@ jobs:
           pip install --upgrade pip
           pip install -r turfmap/requirements.txt
 
+      - name: Apply .gitignore before processing
+        run: |
+          git config --global core.excludesfile .gitignore
+          echo "Applied .gitignore rules"
+
       - name: Initialize DB schema and indexes
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -76,9 +81,23 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add .
+          # .gitignoreで除外されたファイルを除外してadd
+          git add -A
           git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update: Daily temperature data and pest maps"
-          git push
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git push origin HEAD:${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Add .gitignore
+        run: |
+          git add .gitignore
+          git commit -m "Remove ignored files from repository"
+          git push
+          
+      - name: Remove cached files
+        run: |
+          git rm --cached -r turfmap/__pycache__
+          git rm --cached turfmap/*.log
+          git rm --cached turfmap/cron_fetch_update.log
           
