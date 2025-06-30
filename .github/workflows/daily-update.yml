@@ -28,6 +28,7 @@ jobs:
         run: |
           pwd
           ls -l
+          ls -l turfmap || true
           
       - name: Run daily update
         env:
