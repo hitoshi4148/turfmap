@@ -1,4 +1,4 @@
-あｒあｒimport pandas as pd
+import pandas as pd
 from datetime import datetime
 import logging
 from pathlib import Path
