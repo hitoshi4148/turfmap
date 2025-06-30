@@ -1,107 +1,15 @@
 name: Daily Agromap Update
 
 on:
-  schedule:
-    # 毎日午前2時UTC（日本時間午前11時）に実行
-    - cron: '0 2 * * *'
-  workflow_dispatch:  # 手動実行も可能
+  workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 480  # 8時間でタイムアウト（積算温度計算の長時間処理に対応）
-    permissions:
-      contents: write  # リポジトリに書き込み権限を追加
-    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-          
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r turfmap/requirements.txt
-
-      - name: Apply .gitignore before processing
-        run: |
-          git config --global core.excludesfile .gitignore
-          echo "Applied .gitignore rules"
-
-      - name: Initialize DB schema and indexes
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          cd turfmap
-          python -c "from database import Database; Database()"
-
-      - name: Run daily update
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          cd turfmap
-          echo "=== ワークフロー開始: $(date) ==="
-          echo "Python version: $(python --version)"
-          echo "Working directory: $(pwd)"
-          echo "Files in directory: $(ls -la)"
-          echo "=== データベース接続テスト ==="
-          python -c "
-          import os
-          from database import Database
-          try:
-              db = Database()
-              print('データベース接続成功')
-              latest_date = db.get_latest_temperature_date()
-              print(f'最新データ日付: {latest_date}')
-          except Exception as e:
-              print(f'データベース接続エラー: {e}')
-              exit(1)
-          "
-          echo "=== メイン処理開始 ==="
-          python fetch_and_update.py
-          echo "=== ワークフロー完了: $(date) ==="
-          
-      - name: Upload logs on failure
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: error-logs
-          path: |
-            turfmap/cron_fetch_update.log
-            turfmap/temperature_fetch.log
-            turfmap/temperature_calculation.log
-          retention-days: 7
-          
-      - name: Unstage ignored files
-        run: |
-          git status --ignored
-          git ls-files -i --exclude-standard -z | xargs -0 git rm --cached || true
-          
-      - name: Commit and push updated files
-        if: ${{ success() }}
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -A
-          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update: Daily temperature data and pest maps"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git push origin HEAD
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Add .gitignore
-        run: |
-          git add .gitignore
-          git commit -m "Remove ignored files from repository"
-          git push
-          
-      - name: Remove cached files
-        run: |
-          git rm --cached -r turfmap/__pycache__
-          git rm --cached turfmap/*.log
-          git rm --cached turfmap/cron_fetch_update.log
-          
