@@ -215,7 +215,7 @@ class Database:
                         ON CONFLICT (date, latitude, longitude) DO NOTHING
                         ''',
                         temperature_data,
-                        template=None,
+                        template='(%s::date, %s::numeric, %s::numeric, %s::numeric, %s)',
                         page_size=1000
                     )
                     conn.commit()
@@ -298,7 +298,7 @@ class Database:
                     cur.execute('''
                         SELECT date, temperature
                         FROM temperature_data
-                        WHERE ABS(latitude - %s) <= %s AND ABS(longitude - %s) <= %s
+                        WHERE ABS(latitude::numeric - %s::numeric) <= %s::numeric AND ABS(longitude::numeric - %s::numeric) <= %s::numeric
                         ORDER BY date
                     ''', (latitude, tolerance, longitude, tolerance))
                     return cur.fetchall()
@@ -311,7 +311,7 @@ class Database:
             with get_connection() as conn:
                 with conn.cursor() as cur:
                     cur.execute('''
-                        SELECT DISTINCT latitude, longitude
+                        SELECT DISTINCT latitude::numeric, longitude::numeric
                         FROM grid_points
                         ORDER BY latitude, longitude
                     ''')
@@ -329,7 +329,7 @@ class Database:
                     query = "SELECT * FROM temperature_data"
                     params = []
                     if start_date and end_date:
-                        query += " WHERE date BETWEEN %s AND %s"
+                        query += " WHERE date BETWEEN %s::date AND %s::date"
                         params.extend([start_date, end_date])
                     cur.execute(query, params)
                     data = cur.fetchall()
@@ -357,7 +357,7 @@ class Database:
                 with conn.cursor() as cur:
                     cur.execute('''
                         INSERT INTO accumulated_temperature (date, latitude, longitude, accumulated_temp, created_at)
-                        VALUES (%s, %s, %s, %s, %s)
+                        VALUES (%s::date, %s::numeric, %s::numeric, %s::numeric, %s)
                         ON CONFLICT (date, latitude, longitude) DO UPDATE SET
                             accumulated_temp = EXCLUDED.accumulated_temp,
                             created_at = EXCLUDED.created_at
@@ -372,7 +372,7 @@ class Database:
         try:
             with get_connection() as conn:
                 with conn.cursor() as cur:
-                    cur.execute('SELECT MAX(date) as max_date FROM temperature_data')
+                    cur.execute('SELECT MAX(date::date) as max_date FROM temperature_data')
                     row = cur.fetchone()
                     return row['max_date'] if row and row['max_date'] else None
         except Exception as e:
@@ -384,7 +384,7 @@ class Database:
         try:
             with get_connection() as conn:
                 with conn.cursor() as cur:
-                    cur.execute('SELECT MAX(date) as max_date FROM accumulated_temperature')
+                    cur.execute('SELECT MAX(date::date) as max_date FROM accumulated_temperature')
                     row = cur.fetchone()
                     return row['max_date'] if row and row['max_date'] else None
         except Exception as e:

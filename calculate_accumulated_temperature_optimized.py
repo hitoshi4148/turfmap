@@ -1,4 +1,4 @@
-あｒあｒimport pandas as pd
+import pandas as pd
 from datetime import datetime
 import logging
 from pathlib import Path
@@ -46,7 +46,7 @@ def calculate_accumulated_temperature_optimized():
                 if latest_accumulated_date:
                     cur.execute('''
                         DELETE FROM accumulated_temperature 
-                        WHERE date > %s
+                        WHERE date > %s::date
                     ''', (latest_accumulated_date,))
                     logging.info(f"最新の積算温度データ以降（{latest_accumulated_date}）のデータをクリアしました")
                 
@@ -55,16 +55,16 @@ def calculate_accumulated_temperature_optimized():
                     INSERT INTO accumulated_temperature (date, latitude, longitude, accumulated_temp, created_at)
                     WITH temp_ordered AS (
                         SELECT 
-                            date,
-                            latitude,
-                            longitude,
-                            temperature,
+                            date::date,
+                            latitude::numeric,
+                            longitude::numeric,
+                            temperature::numeric,
                             ROW_NUMBER() OVER (
                                 PARTITION BY latitude, longitude 
                                 ORDER BY date
                             ) as rn
                         FROM temperature_data
-                        WHERE date >= COALESCE(%s, '2025-01-01'::date)
+                        WHERE date >= COALESCE(%s::date, '2025-01-01'::date)
                         ORDER BY latitude, longitude, date
                     ),
                     temp_cumsum AS (
@@ -84,7 +84,7 @@ def calculate_accumulated_temperature_optimized():
                         date,
                         latitude,
                         longitude,
-                        accumulated_temp,
+                        accumulated_temp::numeric,
                         NOW() as created_at
                     FROM temp_cumsum
                     ON CONFLICT (date, latitude, longitude) DO UPDATE SET
