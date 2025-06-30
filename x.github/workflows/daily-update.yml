@@ -10,6 +10,8 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 480  # 8時間でタイムアウト（積算温度計算の長時間処理に対応）
+    permissions:
+      contents: write  # リポジトリに書き込み権限を追加
     
     steps:
       - name: Checkout repository
