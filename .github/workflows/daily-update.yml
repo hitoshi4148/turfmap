@@ -32,7 +32,7 @@ jobs:
       - name: Run daily update
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: python turfmap/fetch_and_update.py
+        run: python fetch_and_update.py
           
       - name: Commit and push updated files
         run: |
