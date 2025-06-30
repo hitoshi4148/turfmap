@@ -66,7 +66,7 @@ jobs:
           echo "=== ワークフロー完了: $(date) ==="
           
       - name: Upload logs on failure
-        if: failure()
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v3
         with:
           name: error-logs
@@ -82,7 +82,7 @@ jobs:
           git ls-files -i --exclude-standard -z | xargs -0 git rm --cached || true
           
       - name: Commit and push updated files
-        if: success()
+        if: ${{ success() }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
