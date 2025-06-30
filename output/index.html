@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>グリーンキーパーのための積算温度追跡マップ</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .page-title {
+            text-align: center;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+        }
+        #left-panel {
+            width: 200px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        #right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        #map-container {
+            flex: 1;
+            position: relative;
+        }
+        #map-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        #legend-container {
+            padding: 20px 0;
+            text-align: center;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ccc;
+            margin-top: 20px;
+        }
+        .legend-image {
+            width: 100%;
+            max-width: 360px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            transform: scale(2.5);
+            transform-origin: top center;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #pest-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .map-button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .map-button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .map-button.active {
+            background-color: #e74c3c;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-weight: bold;
+        }
+        .map-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 3px;
+            background-color: #e74c3c;
+            border-radius: 2px;
+        }
+        h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ccc;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="page-title" style="margin-bottom:0; padding-bottom:0;">グリーンキーパーのための積算温度追跡マップ</h1>
+    <div style="background:#4CAF50; color:#fff; text-align:center; font-size:16px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">ver0.1 試験運用中</div>
+    <div style="background:#4CAF50; color:#fff; text-align:right; font-size:14px; font-weight:bold; margin-bottom:0; margin-top:0; padding:6px 16px 6px 16px; line-height:1;">
+        <span id="current-date"></span>
+    </div>
+    <div class="container">
+        <div id="left-panel">
+            <h2>害虫選択</h2>
+            <div id="pest-buttons">
+                <!-- 害虫ボタンは動的に生成されます -->
+            </div>
+            <div id="pest-description">
+                <h3>害虫の説明</h3>
+                <p id="description-text">害虫を選択してください。</p>
+            </div>
+            <div id="legend-container">
+                <img id="legend-image" src="/output/shibatutoga_legend.png" alt="凡例" class="legend-image">
+            </div>
+        </div>
+        <div id="right-panel">
+            <div id="map-container">
+                <iframe id="map-frame" src="/output/shibatutoga_map.html" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        ©2025 Growth and Progress
+    </footer>
+
+    <script>
+        // 害虫データを動的に読み込み
+        let pestsList = [];
+        async function loadPests() {
+            try {
+                const response = await fetch('/api/pests');
+                const pests = await response.json();
+                pestsList = pests; // グローバルに保存
+                
+                const pestButtonsContainer = document.getElementById('pest-buttons');
+                pestButtonsContainer.innerHTML = '';
+                
+                pests.forEach(pest => {
+                    const button = document.createElement('button');
+                    button.className = 'map-button';
+                    button.textContent = pest.name;
+                    button.onclick = () => changeMap(pest.name);
+                    pestButtonsContainer.appendChild(button);
+                });
+                
+                // 最初の害虫を選択
+                if (pests.length > 0) {
+                    changeMap(pests[0].name);
+                }
+            } catch (error) {
+                console.error('Error loading pests:', error);
+            }
+        }
+
+        // ページ読み込み時に害虫データを読み込み
+        document.addEventListener('DOMContentLoaded', loadPests);
+
+        function updateMap(pestType) {
+            // 地図の更新
+            const mapFrame = document.getElementById('map-frame');
+            mapFrame.src = `/output/${pestType}_map.html`;
+            
+            // 凡例の更新
+            const legendImage = document.getElementById('legend-image');
+            const timestamp = new Date().getTime();
+            legendImage.src = `/output/${pestType}_legend.png?t=${timestamp}`;
+        }
+        
+        function changeMap(pestName) {
+            // 害虫名からIDを取得
+            const pestIdMap = {
+                'シバツトガ': 'shibatuga',
+                'スジキリヨトウ': 'sujikiri', 
+                'マメコガネ': 'mamekogane',
+                'タマナヤガ': 'tamanayaga'
+            };
+            
+            const pestId = pestIdMap[pestName];
+            if (pestId) {
+                updateMap(pestId);
+                
+                // 説明文を更新
+                const descriptionText = document.getElementById('description-text');
+                // pestsListから該当する害虫を探す
+                const pest = pestsList.find(p => p.name === pestName);
+                if (pest && pest.description) {
+                    descriptionText.textContent = pest.description;
+                } else {
+                    descriptionText.textContent = `${pestName}の説明が見つかりません。`;
+                }
+                
+                // ボタンのアクティブ状態を更新
+                const buttons = document.querySelectorAll('.map-button');
+                buttons.forEach(button => {
+                    button.classList.remove('active');
+                    if (button.textContent === pestName) {
+                        button.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        // 日付を「YYYY年MM月DD日現在」形式で表示
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = (now.getMonth() + 1).toString().padStart(2, '0');
+        const d = now.getDate().toString().padStart(2, '0');
+        document.getElementById('current-date').textContent = `${y}年${m}月${d}日現在`;
+    </script>
+</body>
+</html> 

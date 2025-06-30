@@ -76,12 +76,16 @@ jobs:
             turfmap/temperature_calculation.log
           retention-days: 7
           
+      - name: Unstage ignored files
+        run: |
+          git status --ignored
+          git ls-files -i --exclude-standard -z | xargs -0 git rm --cached || true
+          
       - name: Commit and push updated files
         if: success()
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          # .gitignoreで除外されたファイルを除外してadd
           git add -A
           git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update: Daily temperature data and pest maps"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
