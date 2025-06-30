@@ -24,6 +24,11 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           
+      - name: Show working directory and files
+        run: |
+          pwd
+          ls -l
+          
       - name: Run daily update
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
