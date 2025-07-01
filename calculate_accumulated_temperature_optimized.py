@@ -51,6 +51,9 @@ def calculate_accumulated_temperature_optimized():
                     logging.info(f"最新の積算温度データ以降（{latest_accumulated_date}）のデータをクリアしました")
                 
                 # データベース内で積算温度を計算して挿入
+                # 開始日付を設定（最新の積算温度データ日付またはデフォルト日付）
+                start_date = latest_accumulated_date if latest_accumulated_date else '2025-01-01'
+                
                 cur.execute('''
                     INSERT INTO accumulated_temperature (date, latitude, longitude, accumulated_temp, created_at)
                     WITH temp_ordered AS (
@@ -64,7 +67,7 @@ def calculate_accumulated_temperature_optimized():
                                 ORDER BY date
                             ) as rn
                         FROM temperature_data
-                        WHERE date >= COALESCE(%s::date, '2025-01-01'::date)
+                        WHERE date >= %s::date
                         ORDER BY latitude, longitude, date
                     ),
                     temp_cumsum AS (
@@ -90,7 +93,7 @@ def calculate_accumulated_temperature_optimized():
                     ON CONFLICT (date, latitude, longitude) DO UPDATE SET
                         accumulated_temp = EXCLUDED.accumulated_temp,
                         created_at = EXCLUDED.created_at
-                ''', (latest_accumulated_date,))
+                ''', (start_date,))
                 
                 # 挿入されたレコード数を取得
                 inserted_count = cur.rowcount
