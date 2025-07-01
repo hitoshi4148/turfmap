@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, date
 import logging
 from pathlib import Path
 from database import Database, get_connection
@@ -51,7 +51,12 @@ def calculate_accumulated_temperature_optimized():
                     logging.info(f"最新の積算温度データ以降（{latest_accumulated_date}）のデータをクリアしました")
                 
                 # 開始日付を決定
-                start_date = latest_accumulated_date if latest_accumulated_date else '2025-01-01'
+                if latest_accumulated_date is None:
+                    start_date = '2025-01-01'
+                elif isinstance(latest_accumulated_date, str):
+                    start_date = latest_accumulated_date  # すでに'YYYY-MM-DD'形式ならOK
+                else:
+                    start_date = latest_accumulated_date.strftime('%Y-%m-%d')
 
                 # データベース内で積算温度を計算して挿入
                 cur.execute('''
