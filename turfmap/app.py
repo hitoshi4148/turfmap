@@ -7,7 +7,7 @@ import sqlite3
 import os
 from dotenv import load_dotenv
 import json
-from database import Database
+from turfmap.database import Database
 
 # 環境変数の読み込み
 load_dotenv()
