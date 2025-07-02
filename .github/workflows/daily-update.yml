@@ -1,40 +1,28 @@
-name: Daily Agromap Update
+name: Daily Fetch and Update
 
 on:
   schedule:
-    # 毎日午前2時UTC（日本時間午前11時）に実行
-    - cron: '0 2 * * *'
-  workflow_dispatch:  # 手動実行も可能
+    - cron: '0 0 * * *'  # 毎日0時（JSTなら9時に調整必要）
+  workflow_dispatch:      # 手動実行も可能
 
 jobs:
-  update:
+  fetch-and-update:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.10'
       - name: Install dependencies
-        run: |
-            pip install --upgrade pip
-            pip install -r requirements.txt
-      - name: Show working directory and files
-        run: |
-            pwd
-            ls -l
-            ls -l turfmap || true
-      - name: Run daily update
-        env:
-           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: pip install -r requirements.txt
+      - name: Run fetch and update
         run: python turfmap/fetch_and_update.py
-          
-      - name: Commit and push updated files
+      - name: Commit and push if changes
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add .
-          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update: Daily temperature data and pest maps"
-          git push 
+          git diff --cached --quiet || git commit -m "Auto update: fetch and update data"
+          git push
           
