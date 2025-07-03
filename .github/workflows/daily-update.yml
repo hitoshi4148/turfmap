@@ -8,6 +8,8 @@ on:
 jobs:
   fetch-and-update:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
