@@ -144,6 +144,11 @@ def generate_pest_map(pest):
     output_map = f"output/{pest_name_safe}_map.html"
     output_legend = f"output/{pest_name_safe}_legend.png"
     
+    # 出力先ディレクトリを取得
+    output_dir = os.path.dirname(output_map)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir, exist_ok=True)
+
     # 地図を保存
     m.save(output_map)
     print(f"✅ {output_map} を作成しました。")
