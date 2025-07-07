@@ -48,9 +48,13 @@ def generate_map(pest):
     lon = df["lon"]
     temp = df["cum_gdd"]
 
+    print(f"{pest_id}: grid_temp min={np.nanmin(temp)}, max={np.nanmax(temp)}, nan count={np.isnan(temp).sum()}, total={temp.size}")
+
     # グリッド生成と補間
     grid_lat, grid_lon = np.mgrid[min(lat):max(lat):200j, min(lon):max(lon):200j]
     grid_temp = griddata((lat, lon), temp, (grid_lat, grid_lon), method="cubic")
+
+    print(f"{pest_id}: grid_temp min={np.nanmin(grid_temp)}, max={np.nanmax(grid_temp)}, nan count={np.isnan(grid_temp).sum()}, total={grid_temp.size}")
 
     # 等値線描画用のレベルを調整（最低2つのレベルが必要）
     if len(levels) == 1:
@@ -62,14 +66,24 @@ def generate_map(pest):
         labels = ['低リスク', '高リスク']
         colors = ['#CCCCCC', '#FF0000']
 
+    print(f"{pest_id}: levels={levels}")
+
+    # colorsの数をlevelsの数-1に揃える
+    if len(colors) > len(levels) - 1:
+        colors = colors[:len(levels)-1]
+    elif len(colors) < len(levels) - 1:
+        # 足りない場合は最後の色で埋める
+        colors += [colors[-1]] * (len(levels)-1 - len(colors))
+
     # 画像保存（透明背景）
     fig, ax = plt.subplots(figsize=(8, 6))
     # カラー指定でcontourf
-    cs = ax.contourf(grid_lon, grid_lat, grid_temp, levels=levels, colors=colors, alpha=0.7)
-
-    # ラベル（線の上にテキスト）
-    lines = plt.contour(grid_lon, grid_lat, grid_temp, levels=levels, colors='black', linewidths=0.5)
-    plt.clabel(lines, inline=True, fontsize=8, fmt="%.0f")
+    try:
+        cs = ax.contourf(grid_lon, grid_lat, grid_temp, levels=levels, colors=colors, alpha=0.7)
+        lines = plt.contour(grid_lon, grid_lat, grid_temp, levels=levels, colors='black', linewidths=0.5)
+        plt.clabel(lines, inline=True, fontsize=8, fmt="%.0f")
+    except Exception as e:
+        print(f"{pest_id}: contour error: {e}")
 
     ax.axis('off')
     plt.savefig(f"data/{pest_id}_contours.png", bbox_inches="tight", pad_inches=0, transparent=True)

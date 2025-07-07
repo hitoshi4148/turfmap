@@ -125,7 +125,7 @@
 </head>
 <body>
     <h1 class="page-title" style="margin-bottom:0; padding-bottom:0;">グリーンキーパーのための積算温度追跡マップ</h1>
-    <div style="background:#4CAF50; color:#fff; text-align:center; font-size:16px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">ver0.1 試験運用中</div>
+    <div style="background:#4CAF50; color:#fff; text-align:center; font-size:16px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">ver0.5 試験運用中</div>
     <div style="background:#4CAF50; color:#fff; text-align:right; font-size:14px; font-weight:bold; margin-bottom:0; margin-top:0; padding:6px 16px 6px 16px; line-height:1;">
         <span id="current-date"></span>
     </div>
@@ -140,12 +140,12 @@
                 <p id="description-text">害虫を選択してください。</p>
             </div>
             <div id="legend-container">
-                <img id="legend-image" src="/output/shibatutoga_legend.png" alt="凡例" class="legend-image">
+                <img id="legend-image" src="/output/shibatuga_legend.png" alt="凡例" class="legend-image">
             </div>
         </div>
         <div id="right-panel">
             <div id="map-container">
-                <iframe id="map-frame" src="/output/shibatutoga_map.html" frameborder="0"></iframe>
+                <iframe id="map-frame" src="/output/shibatuga_map.html" frameborder="0"></iframe>
             </div>
         </div>
     </div>
@@ -202,7 +202,9 @@
                 'シバツトガ': 'shibatuga',
                 'スジキリヨトウ': 'sujikiri', 
                 'マメコガネ': 'mamekogane',
-                'タマナヤガ': 'tamanayaga'
+                'タマナヤガ': 'tamanayaga',
+                'ダラースポット': 'dollerspot',
+                'スズメノカタビラ': 'katabira'
             };
             
             const pestId = pestIdMap[pestName];

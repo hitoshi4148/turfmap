@@ -9,14 +9,23 @@ from dotenv import load_dotenv
 import json
 from turfmap.database import Database
 
+app = Flask(__name__)
+
+@app.route('/output/<path:filename>')
+def output_files(filename):
+    import os
+    # outputディレクトリは agromap/output です
+    output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../output'))
+    print(f"DEBUG: output_dir={output_dir}, filename={filename}")
+    return send_from_directory(output_dir, filename)
+
+
 # 環境変数の読み込み
 load_dotenv()
 
 # ロギングの設定
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-
-app = Flask(__name__)
 
 # データディレクトリの設定
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
@@ -183,8 +192,8 @@ def load_pests_data():
 
 @app.route('/')
 def index():
-    """メインページの表示"""
-    return send_from_directory('output', 'index.html')
+    output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../output'))
+    return send_from_directory(output_dir, 'index.html')
 
 @app.route('/api/pests')
 def get_pests():
@@ -264,11 +273,6 @@ def get_temperature_data(pest_id):
     except Exception as e:
         print(f"Error in get_temperature_data: {str(e)}")
         return jsonify([])
-
-@app.route('/output/<path:filename>')
-def output_files(filename):
-    """outputディレクトリのファイルを提供"""
-    return send_from_directory('output', filename)
 
 @app.route('/data/<path:filename>')
 def data_files(filename):

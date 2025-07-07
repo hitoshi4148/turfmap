@@ -389,4 +389,4 @@ class Database:
                     return row['max_date'] if row and row['max_date'] else None
         except Exception as e:
             logger.error(f"Error fetching latest accumulated temperature date: {str(e)}")
-            return None 
+            return None
