@@ -149,7 +149,7 @@
       "id": "katabira",
       "name": "スズメノカタビラ",
       "base_temp": -5.6,
-      "description": "場所を選ばず発生するイネ科の雑草。高麗芝上での基準温度は―5.6℃。",
+      "description": "場所を選ばず発生するイネ科の雑草。基準温度は―5.6℃。",
       "thresholds": [
         {
           "value": 0,
