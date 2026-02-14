@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run fetch and update
-        run: python turfmap/fetch_and_update.py
+        run: python fetch_and_update.py
       - name: Commit and push if changes
         run: |
           git config --global user.name 'github-actions[bot]'

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>グリーンキーパーのための積算温度追跡マップ</title>
+    <title>芝しごと・積算温度追跡マップ</title>
     <meta name="description" content="グリーンキーパー・グランドキーパー・芝生管理・ゴルフ場の害虫・病害・雑草対策に役立つ積算温度（GDD）マップ。シバツトガ、スジキリヨトウ、マメコガネ、タマナヤガ、ダラースポット、スズメノカタビラ等のリスクを可視化。">
     <meta name="keywords" content="グリーンキーパー,グランドキーパー,芝,芝生,ターフ,turf,ゴルフ場,害虫,シバツトガ,スジキリヨトウ,マメコガネ,タマナヤガ,病害,ダラースポット,雑草,スズメノカタビラ,GDD,積算温度">
     <meta property="og:title" content="芝生害虫・病害・雑草 積算温度マップ">
@@ -14,6 +14,9 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="芝生害虫・病害・雑草 積算温度マップ">
     <meta name="twitter:description" content="グリーンキーパー・グランドキーパー・芝生管理・ゴルフ場の害虫・病害・雑草対策に役立つ積算温度（GDD）マップ。シバツトガ、スジキリヨトウ、マメコガネ、タマナヤガ、ダラースポット、スズメノカタビラ等のリスクを可視化。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -37,7 +40,7 @@
             flex: 1;
         }
         #left-panel {
-            width: 170px;
+            width: 180px;
             background-color: #f0f0f0;
             padding: 20px;
             box-sizing: border-box;
@@ -49,6 +52,87 @@
             display: flex;
             flex-direction: column;
         }
+        /* アニメーション操作バー */
+        #animation-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background-color: #333;
+            color: #fff;
+            font-size: 14px;
+            min-height: 40px;
+        }
+        .anim-btn {
+            background: none;
+            border: 2px solid #aaa;
+            color: #fff;
+            font-size: 18px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            padding: 0;
+            line-height: 1;
+        }
+        .anim-btn:hover {
+            border-color: #fff;
+            background-color: rgba(255,255,255,0.15);
+        }
+        .anim-btn:disabled {
+            opacity: 0.3;
+            cursor: default;
+        }
+        .anim-btn.play-btn {
+            border-color: #4CAF50;
+            font-size: 20px;
+        }
+        .anim-btn.play-btn:hover {
+            border-color: #66BB6A;
+            background-color: rgba(76,175,80,0.2);
+        }
+        #anim-date-display {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 22px;
+            min-width: 280px;
+            text-align: center;
+            letter-spacing: 1px;
+            color: #4CFF50;
+            text-shadow: 0 0 6px rgba(76,255,80,0.4);
+        }
+        #anim-progress {
+            flex: 1;
+            max-width: 300px;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #555;
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+        #anim-progress::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+        #anim-progress::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+            border: none;
+        }
         #map-container {
             flex: 1;
             position: relative;
@@ -59,20 +143,17 @@
             border: none;
         }
         #legend-container {
-            padding: 20px 0;
-            text-align: center;
+            padding: 10px 0 10px 20px;
             background-color: #f0f0f0;
             border-top: 1px solid #ccc;
             margin-top: 20px;
         }
         .legend-image {
             width: 100%;
-            max-width: 360px;
             height: auto;
-            margin: 0 auto;
             display: block;
-            transform: scale(2.5);
-            transform-origin: top center;
+            transform: scale(1.5);
+            transform-origin: left top;
         }
         .button-container {
             display: flex;
@@ -92,7 +173,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             transition: all 0.3s ease;
             position: relative;
         }
@@ -144,15 +225,17 @@
     </style>
 </head>
 <body>
-    <h1 class="page-title" style="margin-bottom:0; padding-bottom:0;">グリーンキーパーのための積算温度追跡マップ</h1>
-    <div style="background:#4CAF50; color:#fff; text-align:center; font-size:14px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">ver0.91 β版試験運用中</div>
+    <h1 class="page-title" style="margin-bottom:0; padding-bottom:0;">芝しごと・積算温度追跡マップ</h1>
+    <div style="background:#4CAF50; color:#fff; text-align:center; font-size:14px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">ver1.0</div>
     <div style="background:#4CAF50; color:#fff; text-align:center; font-size:12px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">積算温度とは平均気温から基準温度を引いた温度を一定期間合計したもので、作物の成育予測や害虫の発生予測などに用いられる指標です。</div>
+    <div style="display:flex; align-items:center; justify-content:center; background:#4CAF50; padding:8px 16px; margin:0;">
+        <a href="mailto:growthandprogress4148@gmail.com?subject=%E3%83%90%E3%83%8A%E3%83%BC%E5%BA%83%E5%91%8A%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><img src="/output/banner_ad_recruitment_728x90.png" width="728" height="90" alt="バナー広告募集中" style="display:block;"></a>
+    </div>
     <div style="background:#4CAF50; color:#fff; text-align:right; font-size:14px; font-weight:bold; margin-bottom:0; margin-top:0; padding:6px 16px 6px 16px; line-height:1;">
         <span id="current-date"></span>
     </div>
     <div class="container">
         <div id="left-panel">
-            
             <div id="pest-buttons">
                 <!-- 害虫ボタンは動的に生成されます -->
             </div>
@@ -165,33 +248,166 @@
             </div>
         </div>
         <div id="right-panel">
+            <!-- アニメーション操作バー -->
+            <div id="animation-bar">
+                <button id="btn-rewind" class="anim-btn" title="巻き戻し（前年1月1日へ）" disabled>&#9198;</button>
+                <button id="btn-play" class="anim-btn play-btn" title="再生" disabled>&#9654;</button>
+                <button id="btn-ffwd" class="anim-btn" title="早送り（現在へ）" disabled>&#9197;</button>
+                <input type="range" id="anim-progress" min="0" max="1" value="1" step="1" disabled>
+                <span id="anim-date-display">読み込み中...</span>
+            </div>
             <div id="map-container">
-                <iframe id="map-frame" src="/output/shibatuga_map.html" frameborder="0"></iframe>
+                <iframe id="map-frame" src="/output/animated_map.html" frameborder="0"></iframe>
             </div>
         </div>
     </div>
     <footer class="footer">
-        ©2025 Growth and Progress　| Weather data provided by NASA POWER
+        &copy;2025 Growth and Progress | Weather data provided by NASA POWER
     </footer>
     <footer style="font-size:small; text-align:center; margin-top:2em; color:#888;">
-  <div>
-    <a href="https://hitoshiyoshinobu.wixsite.com/website" target="_blank" rel="noopener" style="color:#888; text-decoration:underline;">グロウアンドプログレス</a> |
-    <a href="https://turf-disease-app-5lcrgklvb8nazhamvbgwej.streamlit.app/" target="_blank" rel="noopener" style="color:#888; text-decoration:underline;">芝生病害分類ＡＩ</a>
-  </div>
-</footer>
+        <div>
+            <a href="https://hitoshiyoshinobu.wixsite.com/website" target="_blank" rel="noopener" style="color:#888; text-decoration:underline;">グロウアンドプログレス</a> |
+            <a href="https://turf-disease-app-5lcrgklvb8nazhamvbgwej.streamlit.app/" target="_blank" rel="noopener" style="color:#888; text-decoration:underline;">芝生病害分類ＡＩ</a>
+        </div>
+    </footer>
+    <div style="text-align:center; padding:20px 0; background:#f0f0f0;">
+        <a href="mailto:growthandprogress4148@gmail.com?subject=%E3%83%90%E3%83%8A%E3%83%BC%E5%BA%83%E5%91%8A%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><img src="/output/banner_ad_recruitment_300x250.png" width="300" height="250" alt="バナー広告募集中" style="display:inline-block;"></a>
+    </div>
 
     <script>
-        // 害虫データを動的に読み込み
+        // ===== アニメーション制御 =====
+        let animDates = [];
+        let animTotalFrames = 0;
+        let animYearBoundary = 0;
+        let animCurrentFrame = 0;
+        let animPlaying = false;
+        let animTimer = null;
+        const ANIM_INTERVAL_MS = 500; // フレーム間隔 (ミリ秒)
+
+        const btnPlay = document.getElementById('btn-play');
+        const btnRewind = document.getElementById('btn-rewind');
+        const btnFfwd = document.getElementById('btn-ffwd');
+        const progressBar = document.getElementById('anim-progress');
+        const dateDisplay = document.getElementById('anim-date-display');
+        const mapFrame = document.getElementById('map-frame');
+
+        // iframe からのメッセージ受信
+        window.addEventListener('message', function(event) {
+            const msg = event.data;
+            if (!msg || !msg.type) return;
+
+            if (msg.type === 'animation_ready') {
+                animDates = msg.dates;
+                animTotalFrames = msg.totalFrames;
+                animYearBoundary = msg.yearBoundaryIndex;
+                animCurrentFrame = animTotalFrames - 1; // 最新フレーム
+
+                // UIを有効化
+                btnPlay.disabled = false;
+                btnRewind.disabled = false;
+                btnFfwd.disabled = false;
+                progressBar.disabled = false;
+                progressBar.max = animTotalFrames - 1;
+                progressBar.value = animCurrentFrame;
+
+                updateDateDisplay();
+            }
+        });
+
+        // 日付表示を更新
+        function updateDateDisplay() {
+            if (animDates.length === 0) return;
+            const d = animDates[animCurrentFrame];
+            // 年境界の前後で表示を分ける
+            const isCurrentYear = animCurrentFrame >= animYearBoundary;
+            const label = isCurrentYear ? '今年' : '前年';
+            dateDisplay.textContent = d + ' (' + label + ')';
+            progressBar.value = animCurrentFrame;
+        }
+
+        // フレームを送信
+        function sendFrame(frameIndex) {
+            animCurrentFrame = frameIndex;
+            mapFrame.contentWindow.postMessage({ type: 'goto_frame', frame: frameIndex }, '*');
+            updateDateDisplay();
+        }
+
+        // 再生開始
+        function startAnimation() {
+            animPlaying = true;
+            btnPlay.innerHTML = '&#9646;&#9646;'; // 一時停止アイコン
+            btnPlay.title = '一時停止';
+
+            animTimer = setInterval(function() {
+                if (animCurrentFrame >= animTotalFrames - 1) {
+                    // 最終フレーム到達 → 停止
+                    stopAnimation();
+                    return;
+                }
+                animCurrentFrame++;
+                sendFrame(animCurrentFrame);
+            }, ANIM_INTERVAL_MS);
+        }
+
+        // 一時停止
+        function stopAnimation() {
+            animPlaying = false;
+            if (animTimer) {
+                clearInterval(animTimer);
+                animTimer = null;
+            }
+            btnPlay.innerHTML = '&#9654;'; // 再生アイコン
+            btnPlay.title = '再生';
+        }
+
+        // 再生/一時停止ボタン
+        btnPlay.addEventListener('click', function() {
+            if (animPlaying) {
+                stopAnimation();
+            } else {
+                // 最終フレームにいる場合は先頭から
+                if (animCurrentFrame >= animTotalFrames - 1) {
+                    animCurrentFrame = 0;
+                    sendFrame(0);
+                }
+                startAnimation();
+            }
+        });
+
+        // 巻き戻しボタン: 前年1月1日に戻ってアニメーション開始
+        btnRewind.addEventListener('click', function() {
+            stopAnimation();
+            animCurrentFrame = 0;
+            sendFrame(0);
+            startAnimation();
+        });
+
+        // 早送りボタン: 最新フレームに飛んで停止
+        btnFfwd.addEventListener('click', function() {
+            stopAnimation();
+            animCurrentFrame = animTotalFrames - 1;
+            sendFrame(animCurrentFrame);
+        });
+
+        // プログレスバーのドラッグ
+        progressBar.addEventListener('input', function() {
+            const wasPlaying = animPlaying;
+            if (animPlaying) stopAnimation();
+            animCurrentFrame = parseInt(this.value);
+            sendFrame(animCurrentFrame);
+        });
+
+        // ===== 害虫ボタン・説明文 =====
         let pestsList = [];
         async function loadPests() {
             try {
                 const response = await fetch('/api/pests');
                 const pests = await response.json();
-                pestsList = pests; // グローバルに保存
-                
+                pestsList = pests;
+
                 const pestButtonsContainer = document.getElementById('pest-buttons');
                 pestButtonsContainer.innerHTML = '';
-                
+
                 pests.forEach(pest => {
                     const button = document.createElement('button');
                     button.className = 'map-button';
@@ -199,7 +415,7 @@
                     button.onclick = () => changeMap(pest.name);
                     pestButtonsContainer.appendChild(button);
                 });
-                
+
                 // 最初の害虫を選択
                 if (pests.length > 0) {
                     changeMap(pests[0].name);
@@ -209,45 +425,34 @@
             }
         }
 
-        // ページ読み込み時に害虫データを読み込み
         document.addEventListener('DOMContentLoaded', loadPests);
 
-        function updateMap(pestType) {
-            // 地図の更新
-            const mapFrame = document.getElementById('map-frame');
-            mapFrame.src = `/output/${pestType}_map.html`;
-            
-            // 凡例の更新
-            const legendImage = document.getElementById('legend-image');
-            const timestamp = new Date().getTime();
-            legendImage.src = `/output/${pestType}_legend.png?t=${timestamp}`;
-        }
-        
         function changeMap(pestName) {
-            // 害虫名からIDを取得
             const pestIdMap = {
                 'シバツトガ': 'shibatuga',
-                'スジキリヨトウ': 'sujikiri', 
+                'スジキリヨトウ': 'sujikiri',
                 'マメコガネ': 'mamekogane',
                 'タマナヤガ': 'tamanayaga',
                 'ダラースポット': 'dollerspot',
                 'スズメノカタビラ': 'katabira'
             };
-            
+
             const pestId = pestIdMap[pestName];
             if (pestId) {
-                updateMap(pestId);
-                
+                // 凡例の更新
+                const legendImage = document.getElementById('legend-image');
+                const timestamp = new Date().getTime();
+                legendImage.src = '/output/' + pestId + '_legend.png?t=' + timestamp;
+
                 // 説明文を更新
                 const descriptionText = document.getElementById('description-text');
-                // pestsListから該当する害虫を探す
                 const pest = pestsList.find(p => p.name === pestName);
                 if (pest && pest.description) {
                     descriptionText.textContent = pest.description;
                 } else {
-                    descriptionText.textContent = `${pestName}の説明が見つかりません。`;
+                    descriptionText.textContent = pestName + 'の説明が見つかりません。';
                 }
-                
+
                 // ボタンのアクティブ状態を更新
                 const buttons = document.querySelectorAll('.map-button');
                 buttons.forEach(button => {
@@ -256,6 +461,18 @@
                         button.classList.add('active');
                     }
                 });
+
+                // iframe に害虫切替を通知
+                mapFrame.contentWindow.postMessage({ type: 'change_pest', pestId: pestId }, '*');
+
+                // アニメーション再生中の場合は停止して最新表示に戻す
+                if (animPlaying) {
+                    stopAnimation();
+                }
+                if (animTotalFrames > 0) {
+                    animCurrentFrame = animTotalFrames - 1;
+                    sendFrame(animCurrentFrame);
+                }
             }
         }
 
@@ -264,7 +481,7 @@
         const y = now.getFullYear();
         const m = (now.getMonth() + 1).toString().padStart(2, '0');
         const d = now.getDate().toString().padStart(2, '0');
-        document.getElementById('current-date').textContent = `${y}年${m}月${d}日現在`;
+        document.getElementById('current-date').textContent = y + '\u5e74' + m + '\u6708' + d + '\u65e5\u73fe\u5728';
     </script>
 </body>
-</html> 
+</html>
