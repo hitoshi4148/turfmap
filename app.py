@@ -183,8 +183,12 @@ def load_pests_data():
 
 @app.route('/')
 def index():
+    """トップは常に最新HTMLを返す（Googleタグ等の更新がCDN/ブラウザに残らないようにする）"""
     output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output')
-    return send_from_directory(output_dir, 'index.html')
+    resp = send_from_directory(output_dir, 'index.html')
+    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    resp.headers['Pragma'] = 'no-cache'
+    return resp
 
 @app.route('/api/pests')
 def get_pests():
