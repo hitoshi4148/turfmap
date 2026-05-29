@@ -231,24 +231,172 @@
             color: #666;
             font-size: 14px;
         }
+        #herbicide-panel {
+            background: #4CAF50;
+            color: #fff;
+            padding: 4px 12px 6px;
+            font-size: 11px;
+            line-height: 1.3;
+        }
+        .coord-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 4px 8px;
+            margin-bottom: 4px;
+        }
+        .coord-row label { font-weight: bold; white-space: nowrap; }
+        .coord-row input[type="number"],
+        #herbicide-panel input[type="date"] {
+            width: 88px;
+            padding: 2px 4px;
+            font-size: 11px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .coord-row .btn-geo {
+            padding: 3px 8px;
+            font-size: 11px;
+            background: #fff;
+            color: #2e7d32;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .coord-row .btn-geo:hover { background: #e8f5e9; }
+        #geo-error {
+            width: 100%;
+            text-align: center;
+            color: #ffeb3b;
+            font-size: 10px;
+            min-height: 0;
+        }
+        #geo-error:empty { display: none; }
+        .herb-panel-note {
+            text-align: center;
+            font-size: 10px;
+            opacity: 0.95;
+            margin: 0 0 5px;
+            line-height: 1.3;
+        }
+        .herb-block {
+            max-width: 900px;
+            margin: 0 auto 6px;
+        }
+        .herb-name {
+            font-size: 10px;
+            font-weight: bold;
+            line-height: 1.2;
+            margin-bottom: 2px;
+        }
+        .herb-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px 6px;
+        }
+        .herb-date-label {
+            font-weight: bold;
+            white-space: nowrap;
+            font-size: 11px;
+        }
+        .gdd-gauge-wrap {
+            flex: 1 1 120px;
+            min-width: 100px;
+            max-width: 220px;
+        }
+        .gdd-gauge-track {
+            position: relative;
+            height: 14px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 3px;
+            overflow: visible;
+        }
+        .gdd-gauge-seg {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            border-radius: 2px;
+        }
+        .gdd-seg-normal { background: #81c784; z-index: 1; }
+        .gdd-seg-window { background: #ffeb3b; z-index: 2; }
+        .gdd-seg-over { background: #e53935; z-index: 3; }
+        .gdd-gauge-mark {
+            position: absolute;
+            top: -2px;
+            width: 2px;
+            height: 18px;
+            background: rgba(255,255,255,0.85);
+            z-index: 4;
+            transform: translateX(-1px);
+        }
+        .gdd-gauge-scale {
+            display: flex;
+            justify-content: space-between;
+            font-size: 8px;
+            opacity: 0.85;
+            margin-top: 1px;
+        }
+        .herb-message {
+            flex: 1 1 180px;
+            font-size: 10px;
+            min-width: 140px;
+        }
     </style>
 </head>
 <body>
     <h1 class="page-title" style="margin-bottom:0; padding-bottom:0;">芝しごと・積算温度追跡マップ</h1>
-    <div style="background:#4CAF50; color:#fff; text-align:center; font-size:14px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">ver1.0</div>
+    <div style="background:#4CAF50; color:#fff; text-align:center; font-size:14px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">v2.0.0</div>
     <div style="background:#4CAF50; color:#fff; text-align:center; font-size:12px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">積算温度とは平均気温から基準温度を引いた温度を一定期間合計したもので、作物の成育予測や害虫の発生予測などに用いられる指標です。</div>
     <div style="display:flex; align-items:center; justify-content:center; background:#4CAF50; padding:8px 16px; margin:0;">
         <a href="https://www.turf-tools.jp/services-4" target="_blank" rel="noopener noreferrer" style="line-height:0;">
-            <img src="/output/banner_pr_size1.png" width="300" height="112" alt="芝管理のプロにPRしませんか？（ターフツールズ）" style="display:block; width:300px; height:112px; max-width:300px;">
+            <img src="/output/banner_pr_size1.png" width="150" height="56" alt="芝管理のプロにPRしませんか？（ターフツールズ）" style="display:block; width:150px; height:56px; max-width:150px;">
         </a>
     </div>
     <div style="display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:8px; background:#4CAF50; padding:8px 16px 12px; margin:0;">
         <a href="https://www.turf-tools.jp/blog" target="_blank" rel="noopener noreferrer" style="line-height:0;">
-            <img src="/output/bloglink.png" width="300" height="100" alt="芝管理技術ブログ" style="display:block; width:300px; height:100px; max-width:300px;">
+            <img src="/output/bloglink.png" width="150" height="50" alt="芝管理技術ブログ" style="display:block; width:150px; height:50px; max-width:150px;">
         </a>
         <a href="https://www.youtube.com/channel/UCSRU0zk4Fj1ETWqMRlJDPJQ" target="_blank" rel="noopener noreferrer" style="line-height:0;">
-            <img src="/output/youtubelink.png" width="300" height="100" alt="グロウアンドプログレス YouTubeチャンネル" style="display:block; width:300px; height:100px; max-width:300px;">
+            <img src="/output/youtubelink.png" width="150" height="50" alt="グロウアンドプログレス YouTubeチャンネル" style="display:block; width:150px; height:50px; max-width:150px;">
         </a>
+    </div>
+    <div id="herbicide-panel">
+        <div class="coord-row">
+            <label for="input-lat">緯度</label>
+            <input type="number" id="input-lat" step="0.0001" min="-90" max="90" aria-label="緯度">
+            <label for="input-lon">経度</label>
+            <input type="number" id="input-lon" step="0.0001" min="-180" max="180" aria-label="経度">
+            <button type="button" class="btn-geo" id="btn-geo">現在地を取得</button>
+        </div>
+        <div id="geo-error"></div>
+        <p class="herb-panel-note">※ 各薬剤の散布日から昨日までの積算温度を表示します</p>
+        <div class="herb-block" id="row-primomax">
+            <div class="herb-name">プリモマックス（トリネキサパックエチル）</div>
+            <div class="herb-controls">
+                <label for="date-primomax" class="herb-date-label">散布日</label>
+                <input type="date" id="date-primomax" aria-label="プリモマックスの散布日">
+                <div class="gdd-gauge-wrap">
+                    <div class="gdd-gauge-track" id="gauge-primomax"></div>
+                    <div class="gdd-gauge-scale"><span>0</span><span>200</span><span>400℃日</span></div>
+                </div>
+                <span class="herb-message" id="msg-primomax">散布日を選択してください</span>
+            </div>
+        </div>
+        <div class="herb-block" id="row-greenfield">
+            <div class="herb-name">グリーンフィールド（フルルプリミドール）</div>
+            <div class="herb-controls">
+                <label for="date-greenfield" class="herb-date-label">散布日</label>
+                <input type="date" id="date-greenfield" aria-label="グリーンフィールドの散布日">
+                <div class="gdd-gauge-wrap">
+                    <div class="gdd-gauge-track" id="gauge-greenfield"></div>
+                    <div class="gdd-gauge-scale"><span>0</span><span>300</span><span>350</span><span>400℃日</span></div>
+                </div>
+                <span class="herb-message" id="msg-greenfield">散布日を選択してください</span>
+            </div>
+        </div>
     </div>
     <div style="background:#4CAF50; color:#fff; text-align:right; font-size:14px; font-weight:bold; margin-bottom:0; margin-top:0; padding:6px 16px 6px 16px; line-height:1;">
         <span id="current-date"></span>
@@ -441,7 +589,10 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadPests);
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPests();
+            initHerbicidePanel();
+        });
 
         function changeMap(pestName) {
             const pestIdMap = {
@@ -498,6 +649,237 @@
         const m = (now.getMonth() + 1).toString().padStart(2, '0');
         const d = now.getDate().toString().padStart(2, '0');
         document.getElementById('current-date').textContent = y + '\u5e74' + m + '\u6708' + d + '\u65e5\u73fe\u5728';
+
+        // ===== 薬剤GDD・座標 =====
+        const GDD_MAX = 400;
+        const DEFAULT_LAT = 35.68;
+        const DEFAULT_LON = 139.76;
+        const COOKIE_DAYS = 365;
+
+        function setCookie(name, value) {
+            const expires = new Date(Date.now() + COOKIE_DAYS * 864e5).toUTCString();
+            document.cookie = name + '=' + encodeURIComponent(value) + ';expires=' + expires + ';path=/;SameSite=Lax';
+        }
+
+        function getCookie(name) {
+            const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+            return match ? decodeURIComponent(match[1]) : null;
+        }
+
+        function formatGdd(n) {
+            return Number(n).toFixed(1);
+        }
+
+        function getCoordsFromInputs() {
+            const lat = parseFloat(document.getElementById('input-lat').value);
+            const lon = parseFloat(document.getElementById('input-lon').value);
+            if (isNaN(lat) || isNaN(lon)) return null;
+            return { lat: lat, lon: lon };
+        }
+
+        function saveCoordCookies(lat, lon) {
+            setCookie('agromap_lat', String(lat));
+            setCookie('agromap_lon', String(lon));
+        }
+
+        function sendMapPin(lat, lon) {
+            if (mapFrame.contentWindow) {
+                mapFrame.contentWindow.postMessage({ type: 'set_location', lat: lat, lon: lon }, '*');
+            }
+        }
+
+        function applyCoords(lat, lon) {
+            document.getElementById('input-lat').value = lat;
+            document.getElementById('input-lon').value = lon;
+            saveCoordCookies(lat, lon);
+            sendMapPin(lat, lon);
+            refreshAllGdd();
+        }
+
+        function onCoordsEnter() {
+            const c = getCoordsFromInputs();
+            if (!c) return;
+            applyCoords(c.lat, c.lon);
+        }
+
+        function pctOfMax(gdd) {
+            return Math.min(100, Math.max(0, (gdd / GDD_MAX) * 100));
+        }
+
+        function renderGauge(trackEl, gdd, mode) {
+            trackEl.innerHTML = '';
+            const totalPct = pctOfMax(gdd);
+
+            function addSeg(cls, leftPct, widthPct) {
+                if (widthPct <= 0) return;
+                const el = document.createElement('div');
+                el.className = 'gdd-gauge-seg ' + cls;
+                el.style.left = leftPct + '%';
+                el.style.width = widthPct + '%';
+                trackEl.appendChild(el);
+            }
+
+            function addMark(value) {
+                const m = document.createElement('div');
+                m.className = 'gdd-gauge-mark';
+                m.style.left = pctOfMax(value) + '%';
+                trackEl.appendChild(m);
+            }
+
+            if (mode === 'primomax') {
+                addMark(200);
+                const end = totalPct;
+                const t200 = pctOfMax(200);
+                if (gdd <= 200) {
+                    addSeg('gdd-seg-normal', 0, end);
+                } else {
+                    addSeg('gdd-seg-normal', 0, t200);
+                    addSeg('gdd-seg-over', t200, end - t200);
+                }
+            } else {
+                addMark(300);
+                addMark(350);
+                const p300 = pctOfMax(300);
+                const p350 = pctOfMax(350);
+                const end = totalPct;
+                if (gdd <= 300) {
+                    addSeg('gdd-seg-normal', 0, end);
+                } else if (gdd <= 350) {
+                    addSeg('gdd-seg-normal', 0, p300);
+                    addSeg('gdd-seg-window', p300, end - p300);
+                } else {
+                    addSeg('gdd-seg-normal', 0, p300);
+                    addSeg('gdd-seg-window', p300, p350 - p300);
+                    addSeg('gdd-seg-over', p350, end - p350);
+                }
+            }
+        }
+
+        function primomaxMessage(gdd) {
+            const s = formatGdd(gdd);
+            if (gdd < 200) {
+                return '現在' + s + 'GDDです。散布適時まであと' + formatGdd(200 - gdd) + 'GDDです';
+            }
+            return '現在' + s + 'GDDです。リバウンドの目安までを' + formatGdd(gdd - 200) + 'GDD超えています';
+        }
+
+        function greenfieldMessage(gdd) {
+            const s = formatGdd(gdd);
+            if (gdd < 300) {
+                return '現在' + s + 'GDDです。散布適時まであと' + formatGdd(300 - gdd) + 'GDDです';
+            }
+            if (gdd <= 350) {
+                return '現在' + s + 'GDDです。散布適時です';
+            }
+            return '現在' + s + 'GDDです。リバウンドの目安までを' + formatGdd(gdd - 350) + 'GDD超えています';
+        }
+
+        async function fetchGdd(lat, lon, startDate) {
+            const url = '/api/gdd?lat=' + encodeURIComponent(lat) +
+                '&lon=' + encodeURIComponent(lon) +
+                '&start_date=' + encodeURIComponent(startDate) +
+                '&base_temp=0';
+            const res = await fetch(url);
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'GDD取得に失敗しました');
+            return data.gdd;
+        }
+
+        async function updateProductGdd(product) {
+            const dateEl = document.getElementById('date-' + product);
+            const msgEl = document.getElementById('msg-' + product);
+            const gaugeEl = document.getElementById('gauge-' + product);
+            const startDate = dateEl.value;
+
+            if (!startDate) {
+                msgEl.textContent = '散布日を選択してください';
+                gaugeEl.innerHTML = '';
+                return;
+            }
+
+            const coords = getCoordsFromInputs();
+            if (!coords) {
+                msgEl.textContent = '有効な座標を入力してください';
+                return;
+            }
+
+            msgEl.textContent = '計算中...';
+            try {
+                const gdd = await fetchGdd(coords.lat, coords.lon, startDate);
+                renderGauge(gaugeEl, gdd, product === 'primomax' ? 'primomax' : 'greenfield');
+                msgEl.textContent = product === 'primomax' ? primomaxMessage(gdd) : greenfieldMessage(gdd);
+            } catch (err) {
+                msgEl.textContent = err.message || '計算に失敗しました';
+                gaugeEl.innerHTML = '';
+            }
+        }
+
+        function refreshAllGdd() {
+            updateProductGdd('primomax');
+            updateProductGdd('greenfield');
+        }
+
+        function initHerbicidePanel() {
+            const latInput = document.getElementById('input-lat');
+            const lonInput = document.getElementById('input-lon');
+            const geoError = document.getElementById('geo-error');
+
+            const cookieLat = getCookie('agromap_lat');
+            const cookieLon = getCookie('agromap_lon');
+            const lat = cookieLat !== null ? parseFloat(cookieLat) : DEFAULT_LAT;
+            const lon = cookieLon !== null ? parseFloat(cookieLon) : DEFAULT_LON;
+            latInput.value = lat;
+            lonInput.value = lon;
+
+            const primoDate = getCookie('agromap_primomax_date');
+            const greenDate = getCookie('agromap_greenfield_date');
+            if (primoDate) document.getElementById('date-primomax').value = primoDate;
+            if (greenDate) document.getElementById('date-greenfield').value = greenDate;
+
+            function onCoordKeydown(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    onCoordsEnter();
+                }
+            }
+            latInput.addEventListener('keydown', onCoordKeydown);
+            lonInput.addEventListener('keydown', onCoordKeydown);
+
+            mapFrame.addEventListener('load', function() {
+                sendMapPin(lat, lon);
+            });
+            if (mapFrame.contentDocument && mapFrame.contentDocument.readyState === 'complete') {
+                sendMapPin(lat, lon);
+            }
+
+            document.getElementById('date-primomax').addEventListener('change', function() {
+                if (this.value) setCookie('agromap_primomax_date', this.value);
+                updateProductGdd('primomax');
+            });
+            document.getElementById('date-greenfield').addEventListener('change', function() {
+                if (this.value) setCookie('agromap_greenfield_date', this.value);
+                updateProductGdd('greenfield');
+            });
+
+            document.getElementById('btn-geo').addEventListener('click', function() {
+                geoError.textContent = '';
+                if (!navigator.geolocation) {
+                    geoError.textContent = 'お使いのブラウザは位置情報に対応していません';
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(
+                    function(pos) {
+                        applyCoords(pos.coords.latitude, pos.coords.longitude);
+                    },
+                    function() {
+                        geoError.textContent = '現在地を取得できませんでした。前回の座標を使用しています';
+                    },
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
+                );
+            });
+
+            refreshAllGdd();
+        }
     </script>
 </body>
 </html>

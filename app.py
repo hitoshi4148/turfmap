@@ -1,12 +1,13 @@
 from flask import Flask, render_template, jsonify, request, send_from_directory
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import logging
 import os
 from dotenv import load_dotenv
 import json
 from database import Database
+from generate_cumtemp import fetch_nasa_temp_data
 
 app = Flask(__name__)
 
@@ -132,6 +133,57 @@ def calculate_accumulated_temperature(df, pest):
 def calculate_cumtemp(temps, base_temp=10):
     """積算温度を計算"""
     return sum(max(0, temp - base_temp) for temp in temps)
+
+def _parse_date_value(value):
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
+    if isinstance(value, str):
+        return datetime.strptime(value[:10], '%Y-%m-%d').date()
+    return value
+
+def calculate_gdd_from_records(records, start_date, end_date, base_temp=0):
+    """日次気温レコードから積算温度（GDD）を計算"""
+    total = 0.0
+    for row in records:
+        d = _parse_date_value(row.get('date') if isinstance(row, dict) else row['date'])
+        if d is None or d < start_date or d > end_date:
+            continue
+        temp = float(row.get('temperature') if isinstance(row, dict) else row['temperature'])
+        if temp <= -900:
+            continue
+        total += max(0.0, temp - base_temp)
+    return round(total, 1)
+
+def fetch_gdd(lat, lon, start_date, end_date, base_temp=0):
+    """指定地点・期間のGDDをDBまたはNASA POWERから取得"""
+    records = db.get_temperature_data_by_location(lat, lon, tolerance=0.05)
+    if records:
+        dates_in_range = [
+            _parse_date_value(r['date'])
+            for r in records
+            if start_date <= _parse_date_value(r['date']) <= end_date
+        ]
+        expected_days = (end_date - start_date).days + 1
+        if len(dates_in_range) >= max(1, int(expected_days * 0.5)):
+            return calculate_gdd_from_records(records, start_date, end_date, base_temp)
+
+    start_str = start_date.strftime('%Y%m%d')
+    end_str = end_date.strftime('%Y%m%d')
+    df = fetch_nasa_temp_data(lat, lon, start_str, end_str)
+    if df is None or df.empty:
+        return None
+
+    nasa_records = []
+    for _, row in df.iterrows():
+        temp = float(row['temp'])
+        if temp <= -900:
+            continue
+        nasa_records.append({'date': row['date'], 'temperature': temp})
+    return calculate_gdd_from_records(nasa_records, start_date, end_date, base_temp)
 
 # グリッドポイントの生成
 def generate_grid_points():
@@ -268,6 +320,47 @@ def get_temperature_data(pest_id):
     except Exception as e:
         print(f"Error in get_temperature_data: {str(e)}")
         return jsonify([])
+
+@app.route('/api/gdd')
+def get_gdd():
+    """指定地点・開始日から昨日までの積算温度（GDD）を返す"""
+    try:
+        lat = request.args.get('lat', type=float)
+        lon = request.args.get('lon', type=float)
+        start_date_str = request.args.get('start_date')
+        base_temp = request.args.get('base_temp', default=0, type=float)
+
+        if lat is None or lon is None or not start_date_str:
+            return jsonify({'error': 'lat, lon, start_date are required'}), 400
+
+        start_date = datetime.strptime(start_date_str[:10], '%Y-%m-%d').date()
+        yesterday = (datetime.now() - timedelta(days=1)).date()
+
+        if start_date > yesterday:
+            return jsonify({
+                'gdd': 0.0,
+                'start_date': start_date.isoformat(),
+                'end_date': yesterday.isoformat(),
+                'base_temp': base_temp,
+            })
+
+        gdd = fetch_gdd(lat, lon, start_date, yesterday, base_temp)
+        if gdd is None:
+            return jsonify({'error': '気温データを取得できませんでした'}), 503
+
+        return jsonify({
+            'gdd': gdd,
+            'start_date': start_date.isoformat(),
+            'end_date': yesterday.isoformat(),
+            'base_temp': base_temp,
+            'lat': lat,
+            'lon': lon,
+        })
+    except ValueError as e:
+        return jsonify({'error': f'日付形式が不正です: {e}'}), 400
+    except Exception as e:
+        logger.error(f"Error in get_gdd: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/data/<path:filename>')
 def data_files(filename):

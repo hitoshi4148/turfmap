@@ -31,7 +31,19 @@
         let currentPestId = 'shibatuga'; // デフォルト害虫
         let currentFrame = -1;
         let imageOverlay = null;
+        let locationMarker = null;
         const cacheBuster = '?v=' + Date.now(); // キャッシュ回避用
+
+        function setLocationPin(lat, lon) {
+            if (lat == null || lon == null || isNaN(lat) || isNaN(lon)) return;
+            const pos = [lat, lon];
+            if (locationMarker) {
+                locationMarker.setLatLng(pos);
+            } else {
+                locationMarker = L.marker(pos).addTo(map);
+            }
+            map.panTo(pos, { animate: true, duration: 0.4 });
+        }
 
         // アニメーションデータをロード
         fetch('/output/animation_data.json' + cacheBuster)
@@ -101,6 +113,8 @@
                 }
             } else if (msg.type === 'change_pest') {
                 changePest(msg.pestId);
+            } else if (msg.type === 'set_location') {
+                setLocationPin(parseFloat(msg.lat), parseFloat(msg.lon));
             }
         });
     </script>
