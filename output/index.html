@@ -333,11 +333,22 @@
             transform: translateX(-1px);
         }
         .gdd-gauge-scale {
-            display: flex;
-            justify-content: space-between;
+            position: relative;
+            height: 12px;
             font-size: 8px;
             opacity: 0.85;
             margin-top: 1px;
+        }
+        .gdd-gauge-scale span {
+            position: absolute;
+            white-space: nowrap;
+            transform: translateX(-50%);
+        }
+        .gdd-gauge-scale span.scale-start {
+            transform: translateX(0);
+        }
+        .gdd-gauge-scale span.scale-end {
+            transform: translateX(-100%);
         }
         .herb-message {
             flex: 1 1 180px;
@@ -348,7 +359,7 @@
 </head>
 <body>
     <h1 class="page-title" style="margin-bottom:0; padding-bottom:0;">芝しごと・積算温度追跡マップ</h1>
-    <div style="background:#4CAF50; color:#fff; text-align:center; font-size:14px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">v2.0.0</div>
+    <div style="background:#4CAF50; color:#fff; text-align:center; font-size:14px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">v2.0.1</div>
     <div style="background:#4CAF50; color:#fff; text-align:center; font-size:12px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">積算温度とは平均気温から基準温度を引いた温度を一定期間合計したもので、作物の成育予測や害虫の発生予測などに用いられる指標です。</div>
     <div style="display:flex; align-items:center; justify-content:center; background:#4CAF50; padding:8px 16px; margin:0;">
         <a href="https://www.turf-tools.jp/services-4" target="_blank" rel="noopener noreferrer" style="line-height:0;">
@@ -380,7 +391,7 @@
                 <input type="date" id="date-primomax" aria-label="プリモマックスの散布日">
                 <div class="gdd-gauge-wrap">
                     <div class="gdd-gauge-track" id="gauge-primomax"></div>
-                    <div class="gdd-gauge-scale"><span>0</span><span>200</span><span>400℃日</span></div>
+                    <div class="gdd-gauge-scale" id="scale-primomax"></div>
                 </div>
                 <span class="herb-message" id="msg-primomax">散布日を選択してください</span>
             </div>
@@ -392,7 +403,7 @@
                 <input type="date" id="date-greenfield" aria-label="グリーンフィールドの散布日">
                 <div class="gdd-gauge-wrap">
                     <div class="gdd-gauge-track" id="gauge-greenfield"></div>
-                    <div class="gdd-gauge-scale"><span>0</span><span>300</span><span>350</span><span>400℃日</span></div>
+                    <div class="gdd-gauge-scale" id="scale-greenfield"></div>
                 </div>
                 <span class="herb-message" id="msg-greenfield">散布日を選択してください</span>
             </div>
@@ -706,8 +717,35 @@
             return Math.min(100, Math.max(0, (gdd / GDD_MAX) * 100));
         }
 
+        function renderGaugeScale(scaleEl, mode) {
+            if (!scaleEl) return;
+            const ticks = mode === 'primomax'
+                ? [
+                    { value: 0, label: '0', edge: 'start' },
+                    { value: 200, label: '200' },
+                    { value: 400, label: '400℃日', edge: 'end' }
+                ]
+                : [
+                    { value: 0, label: '0', edge: 'start' },
+                    { value: 300, label: '300' },
+                    { value: 350, label: '350' },
+                    { value: 400, label: '400℃日', edge: 'end' }
+                ];
+            scaleEl.innerHTML = '';
+            ticks.forEach(function(tick) {
+                const span = document.createElement('span');
+                span.textContent = tick.label;
+                span.style.left = pctOfMax(tick.value) + '%';
+                if (tick.edge === 'start') span.className = 'scale-start';
+                else if (tick.edge === 'end') span.className = 'scale-end';
+                scaleEl.appendChild(span);
+            });
+        }
+
         function renderGauge(trackEl, gdd, mode) {
             trackEl.innerHTML = '';
+            const scaleEl = trackEl.parentElement.querySelector('.gdd-gauge-scale');
+            renderGaugeScale(scaleEl, mode);
             const totalPct = pctOfMax(gdd);
 
             function addSeg(cls, leftPct, widthPct) {
@@ -794,6 +832,10 @@
             if (!startDate) {
                 msgEl.textContent = '散布日を選択してください';
                 gaugeEl.innerHTML = '';
+                renderGaugeScale(
+                    document.getElementById('scale-' + product),
+                    product === 'primomax' ? 'primomax' : 'greenfield'
+                );
                 return;
             }
 
@@ -878,6 +920,8 @@
                 );
             });
 
+            renderGaugeScale(document.getElementById('scale-primomax'), 'primomax');
+            renderGaugeScale(document.getElementById('scale-greenfield'), 'greenfield');
             refreshAllGdd();
         }
     </script>
