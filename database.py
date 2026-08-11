@@ -8,48 +8,38 @@ import pandas as pd
 import logging
 import threading
 import json
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse, unquote
 
 # ロガーの設定
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 def get_connection():
-    DATABASE_URL = os.environ.get("DATABASE_URL")
-    if not DATABASE_URL:
-        # ローカル開発用
+    database_url = os.environ.get("DATABASE_URL")
+    if not database_url:
         return psycopg2.connect(
             host="localhost",
             port=5432,
             database="agromap",
             user="postgres",
             password="postgres",
-            cursor_factory=RealDictCursor
+            cursor_factory=RealDictCursor,
         )
-    
+
     try:
-        # URLをパースして個別のパラメータに分解
-        parsed = urlparse(DATABASE_URL)
-        
-        # 接続パラメータを個別に指定
+        return psycopg2.connect(database_url, cursor_factory=RealDictCursor)
+    except psycopg2.Error:
+        parsed = urlparse(database_url)
+        query = parse_qs(parsed.query)
+        sslmode = query.get("sslmode", ["require"])[0]
         return psycopg2.connect(
             host=parsed.hostname,
             port=parsed.port or 5432,
-            database=parsed.path[1:],  # 先頭の'/'を除去
-            user=parsed.username,
-            password=parsed.password,
-            cursor_factory=RealDictCursor
-        )
-    except Exception as e:
-        logger.error(f"Error parsing DATABASE_URL: {e}")
-        # フォールバック: 直接接続
-        return psycopg2.connect(
-            host="localhost",
-            port=5432,
-            database="agromap",
-            user="postgres",
-            password="postgres",
-            cursor_factory=RealDictCursor
+            dbname=parsed.path.lstrip("/"),
+            user=unquote(parsed.username or ""),
+            password=unquote(parsed.password or ""),
+            sslmode=sslmode,
+            cursor_factory=RealDictCursor,
         )
 
 class Database:

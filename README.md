@@ -5,6 +5,8 @@
 
 気温データは [NASA POWER](https://power.larc.nasa.gov/) を利用しています。
 
+**本番 URL:** https://turfmap.onrender.com/
+
 ---
 
 ## 更新履歴
@@ -13,6 +15,9 @@
 
 - グリーンフィールドの積算温度ゲージ目盛り（300・350℃日）を、最大値 400℃日に対する正しい位置に修正
 - プリモマックスのゲージ目盛りも同じ方式（温度比率による配置）に統一
+- ヘッダーの PR・ブログ・YouTube バナーを 1 行・小型表示に変更
+- フッターに芝しごとシリーズへのリンク、グロウアンドプログレスのロゴ、バージョン表示を追加
+- ブラウザタブのアイコン（favicon）をグロウアンドプログレスのロゴに変更
 
 ### v2.0.0
 
@@ -102,7 +107,7 @@
 ### 必要環境
 
 - Python 3.10 前後
-- PostgreSQL（害虫一覧・マップ用の気温 DB。薬剤 GDD は DB がなくても NASA API で計算可能）
+- PostgreSQL（[Neon](https://neon.tech/) 等。害虫一覧・マップ用の気温 DB。薬剤 GDD は DB がなくても NASA API で計算可能）
 
 ### 手順
 
@@ -114,26 +119,46 @@ pip install -r requirements.txt
 python app.py
 ```
 
-ブラウザで **http://127.0.0.1:5000/** を開きます。
+ブラウザで **http://127.0.0.1:5000/** を開きます。起動ログに `Running on http://127.0.0.1:5000` と表示されれば成功です（`DEBUG` や `WARNING: development server` はエラーではありません）。
 
-終了はターミナルで `Ctrl+C` です。
+終了はターミナルで `Ctrl+C` です。**`python app.py` を実行したターミナルは、ブラウザでアクセスする間閉じないでください。**
 
-### データベース（任意だが推奨）
+### データベース接続（`.env`）
 
-ローカル既定の接続先:
+本番・ローカルとも、環境変数 **`DATABASE_URL`** に Neon の接続文字列（1 行全体）を設定します。
 
-- ホスト: `localhost`
-- ポート: `5432`
-- DB 名: `agromap`
-- ユーザー / パスワード: `postgres` / `postgres`
-
-本番では環境変数 `DATABASE_URL` を設定してください。
+1. [Neon Console](https://console.neon.tech/) → 対象プロジェクト → **Connect**
+2. **Connection string** をコピー
+3. プロジェクト直下に `.env` を作成（または更新）
 
 ```text
-DATABASE_URL=postgresql://user:password@host:5432/agromap
+DATABASE_URL=postgresql://neondb_owner:パスワード@ep-xxxx-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 ```
 
+- **`.env` は Git にコミットしないでください**（パスワードが含まれます）
+- `DATABASE_URL` 未設定時は、ローカル PostgreSQL（`localhost:5432/agromap`、ユーザー `postgres`）に接続します
+- 接続文字列は Neon Console の **Connect** 画面が正（Render / GitHub Secrets も同じ値）
+
 初回起動時に `Database` クラスがテーブルと害虫マスタを初期化します。
+
+---
+
+## 本番デプロイ構成
+
+| 役割 | サービス |
+|------|----------|
+| Web アプリ | [Render](https://render.com/)（Flask） |
+| PostgreSQL | [Neon](https://neon.tech/)（AWS `us-east-1`） |
+| 日次データ更新 | GitHub Actions（`.github/workflows/daily-update.yml`） |
+
+### 環境変数・Secrets
+
+| 場所 | 変数名 | 内容 |
+|------|--------|------|
+| Render | `DATABASE_URL` | Neon の接続文字列（全体） |
+| GitHub Actions | Secret `DATABASE_URL` | 上記と同じ接続文字列 |
+
+無料 Render の Web Service は一定時間アクセスがないとスリープし、**初回起動に 30 秒程度** かかることがあります。
 
 ---
 
@@ -235,10 +260,11 @@ agromap/
 - 積算温度・判定メッセージは参考情報です。実際の散布判断はラベル表示・気象・芝生の状態などを総合して行ってください。
 - 現在地取得はブラウザと OS の位置情報許可が必要です。
 - 薬剤 GDD の NASA API 取得は、初回のみ数秒かかることがあります。
+- 本番は無料ホスティングのため、初回アクセス時に起動待ちが発生することがあります。
 
 ---
 
 ## ライセンス・クレジット
 
 - 気象データ: [NASA POWER](https://power.larc.nasa.gov/)
-- © Growth and Progress
+- © [Growth and Progress](https://www.turf-tools.jp/)

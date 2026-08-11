@@ -13,6 +13,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>芝しごと・積算温度追跡マップ</title>
+    <link rel="icon" type="image/png" href="https://www.turf-tools.jp/portal/grow-and-progress-logo.png?v=2">
     <meta name="description" content="グリーンキーパー・グランドキーパー・芝生管理・ゴルフ場の害虫・病害・雑草対策に役立つ積算温度（GDD）マップ。シバツトガ、スジキリヨトウ、マメコガネ、タマナヤガ、ダラースポット、スズメノカタビラ等のリスクを可視化。">
     <meta name="keywords" content="グリーンキーパー,グランドキーパー,芝,芝生,ターフ,turf,ゴルフ場,害虫,シバツトガ,スジキリヨトウ,マメコガネ,タマナヤガ,病害,ダラースポット,雑草,スズメノカタビラ,GDD,積算温度">
     <meta property="og:title" content="芝生害虫・病害・雑草 積算温度マップ">
@@ -223,13 +224,102 @@
             line-height: 1.4;
             color: #555;
         }
-        .footer {
+        .header-banners {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 6px 10px;
+            background: #4CAF50;
+            padding: 6px 12px 10px;
+            margin: 0;
+        }
+        .header-banner-link {
+            line-height: 0;
+            transition: opacity 0.15s ease;
+        }
+        .header-banner-link:hover {
+            opacity: 0.88;
+        }
+        .header-banner-img {
+            display: block;
+            height: 40px;
+            width: auto;
+            max-width: 110px;
+            object-fit: contain;
+        }
+        .site-footer {
             text-align: center;
-            padding: 15px;
+            padding: 16px 12px;
             background-color: #f0f0f0;
             border-top: 1px solid #ccc;
             color: #666;
             font-size: 14px;
+        }
+        .site-footer p {
+            margin: 4px 0;
+        }
+        .site-footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .site-footer a:hover {
+            text-decoration: underline;
+        }
+        .footer-credit {
+            font-size: 12px;
+            color: #888;
+        }
+        .footer-app-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px 14px;
+            margin: 12px 0 16px;
+            padding-top: 12px;
+            border-top: 1px solid #ddd;
+        }
+        .footer-app-links a {
+            font-size: 12px;
+            font-weight: 600;
+            color: #667eea;
+            text-decoration: none;
+        }
+        .footer-app-links a:hover {
+            text-decoration: underline;
+        }
+        .footer-gp {
+            margin: 8px 0 4px;
+        }
+        .footer-gp-link {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            line-height: 1.3;
+            text-decoration: none;
+            color: #667eea;
+        }
+        .footer-gp-link:hover {
+            opacity: 0.88;
+        }
+        .footer-gp-link:hover .footer-gp-name {
+            text-decoration: underline;
+        }
+        .footer-gp-logo {
+            display: block;
+            height: 56px;
+            width: auto;
+        }
+        .footer-gp-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .footer-version {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #999;
+            letter-spacing: 0.04em;
         }
         #herbicide-panel {
             background: #4CAF50;
@@ -359,19 +449,16 @@
 </head>
 <body>
     <h1 class="page-title" style="margin-bottom:0; padding-bottom:0;">芝しごと・積算温度追跡マップ</h1>
-    <div style="background:#4CAF50; color:#fff; text-align:center; font-size:14px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">v2.0.1</div>
     <div style="background:#4CAF50; color:#fff; text-align:center; font-size:12px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">積算温度とは平均気温から基準温度を引いた温度を一定期間合計したもので、作物の成育予測や害虫の発生予測などに用いられる指標です。</div>
-    <div style="display:flex; align-items:center; justify-content:center; background:#4CAF50; padding:8px 16px; margin:0;">
-        <a href="https://www.turf-tools.jp/services-4" target="_blank" rel="noopener noreferrer" style="line-height:0;">
-            <img src="/output/banner_pr_size1.png" width="150" height="56" alt="芝管理のプロにPRしませんか？（ターフツールズ）" style="display:block; width:150px; height:56px; max-width:150px;">
+    <div class="header-banners" aria-label="関連リンク">
+        <a class="header-banner-link" href="https://www.turf-tools.jp/services-4" target="_blank" rel="noopener noreferrer">
+            <img class="header-banner-img" src="/output/banner_pr_size1.png" alt="芝管理のプロにPRしませんか？（ターフツールズ）">
         </a>
-    </div>
-    <div style="display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:8px; background:#4CAF50; padding:8px 16px 12px; margin:0;">
-        <a href="https://www.turf-tools.jp/blog" target="_blank" rel="noopener noreferrer" style="line-height:0;">
-            <img src="/output/bloglink.png" width="150" height="50" alt="芝管理技術ブログ" style="display:block; width:150px; height:50px; max-width:150px;">
+        <a class="header-banner-link" href="https://www.turf-tools.jp/blog" target="_blank" rel="noopener noreferrer">
+            <img class="header-banner-img" src="/output/bloglink.png" alt="芝管理技術ブログ">
         </a>
-        <a href="https://www.youtube.com/channel/UCSRU0zk4Fj1ETWqMRlJDPJQ" target="_blank" rel="noopener noreferrer" style="line-height:0;">
-            <img src="/output/youtubelink.png" width="150" height="50" alt="グロウアンドプログレス YouTubeチャンネル" style="display:block; width:150px; height:50px; max-width:150px;">
+        <a class="header-banner-link" href="https://www.youtube.com/channel/UCSRU0zk4Fj1ETWqMRlJDPJQ" target="_blank" rel="noopener noreferrer">
+            <img class="header-banner-img" src="/output/youtubelink.png" alt="グロウアンドプログレス YouTubeチャンネル">
         </a>
     </div>
     <div id="herbicide-panel">
@@ -439,14 +526,27 @@
             </div>
         </div>
     </div>
-    <footer class="footer">
-        &copy;2025 Growth and Progress | Weather data provided by NASA POWER
-    </footer>
-    <footer style="font-size:small; text-align:center; margin-top:2em; color:#888;">
-        <div>
-            <a href="https://hitoshiyoshinobu.wixsite.com/website" target="_blank" rel="noopener" style="color:#888; text-decoration:underline;">グロウアンドプログレス</a> |
-            <a href="https://turf-disease-app-5lcrgklvb8nazhamvbgwej.streamlit.app/" target="_blank" rel="noopener" style="color:#888; text-decoration:underline;">芝生病害分類ＡＩ</a>
-        </div>
+    <footer class="site-footer">
+        <p class="footer-credit">Weather data provided by <a href="https://power.larc.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA POWER</a></p>
+        <nav class="footer-app-links" aria-label="芝しごとアプリ">
+            <a href="https://www.turf-tools.jp/portal/" target="_blank" rel="noopener noreferrer">ポータル</a>
+            <a href="https://turfpool.onrender.com/" target="_blank" rel="noopener noreferrer">ターフプール</a>
+            <a href="https://www.turf-tools.jp/portal/rac/" target="_blank" rel="noopener noreferrer">楽RAC農薬ローテ</a>
+            <a href="https://fertilization-design.onrender.com/" target="_blank" rel="noopener noreferrer">施肥設計ナビ</a>
+            <a href="https://www.turf-tools.jp/portal/risk/" target="_blank" rel="noopener noreferrer">病害リスク予報</a>
+            <a href="https://www.turf-tools.jp/portal/#ai-advisor-section" target="_blank" rel="noopener noreferrer">AI質問箱</a>
+            <a href="https://www.turf-tools.jp/portal/diagnosis/" target="_blank" rel="noopener noreferrer">病害画像診断AI</a>
+            <a href="https://www.turf-tools.jp/portal/spray/" target="_blank" rel="noopener noreferrer">ピンポイント天気で芝しごと</a>
+            <a href="https://climate-map-x30t.onrender.com/" target="_blank" rel="noopener noreferrer">温量指数気候区分マップ</a>
+            <a href="https://claim-survival.onrender.com/" target="_blank" rel="noopener noreferrer">クレームサバイバル</a>
+        </nav>
+        <p class="footer-gp">
+            <a href="https://www.turf-tools.jp/" target="_blank" rel="noopener noreferrer" class="footer-gp-link">
+                <img src="https://www.turf-tools.jp/portal/grow-and-progress-logo.png?v=2" alt="" class="footer-gp-logo" width="72" height="72">
+                <span class="footer-gp-name">グロウアンドプログレス</span>
+            </a>
+        </p>
+        <p class="footer-version">v2.0.1</p>
     </footer>
 
     <script>
