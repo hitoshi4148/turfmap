@@ -11,6 +11,10 @@
 
 ## 更新履歴
 
+### v2.0.2
+
+- フッターのターフプールリンクを `https://www.turf-tools.jp/portal/turfpool/` に更新（芝しごとポータル配下の本番 URL）
+
 ### v2.0.1
 
 - グリーンフィールドの積算温度ゲージ目盛り（300・350℃日）を、最大値 400℃日に対する正しい位置に修正
@@ -233,7 +237,7 @@ agromap/
 ├── app.py                 # Flask アプリ（トップページ・API）
 ├── database.py            # PostgreSQL アクセス
 ├── output/
-│   ├── index.html         # メイン UI（v2.0.1）
+│   ├── index.html         # メイン UI（v2.0.2）
 │   └── animated_map.html  # マップ（iframe）
 ├── data/
 │   ├── pests.json         # 害虫マスタ定義
