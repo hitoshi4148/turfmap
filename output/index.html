@@ -45,6 +45,36 @@
             font-weight: bold;
             margin: 0;
         }
+        .gdd-intro {
+            background: #4CAF50;
+            color: #fff;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 8px 16px 10px;
+            margin: 0;
+            line-height: 1.4;
+        }
+        .gdd-intro-text {
+            margin: 0;
+        }
+        .gdd-intro-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px 18px;
+            margin-top: 8px;
+            font-size: 11px;
+            font-weight: normal;
+        }
+        .gdd-intro-links a {
+            color: #fff;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+        .gdd-intro-links a:hover {
+            color: #e8f5e9;
+        }
         .container {
             display: flex;
             flex: 1;
@@ -449,7 +479,13 @@
 </head>
 <body>
     <h1 class="page-title" style="margin-bottom:0; padding-bottom:0;">芝しごと・積算温度追跡マップ</h1>
-    <div style="background:#4CAF50; color:#fff; text-align:center; font-size:12px; font-weight:bold; padding:8px 16px 6px 16px; margin-bottom:0; margin-top:0; line-height:1;">積算温度とは平均気温から基準温度を引いた温度を一定期間合計したもので、作物の成育予測や害虫の発生予測などに用いられる指標です。</div>
+    <div class="gdd-intro">
+        <p class="gdd-intro-text">積算温度とは平均気温から基準温度を引いた温度を一定期間合計したもので、作物の成育予測や害虫の発生予測などに用いられる指標です。</p>
+        <div class="gdd-intro-links">
+            <a href="https://www.turf-tools.jp/post/%E8%8A%9D%E7%94%9F%E7%AE%A1%E7%90%86%E3%81%AE%E7%A7%91%E5%AD%A6%E7%9A%84%E3%82%A2%E3%83%97%E3%83%AD%E3%83%BC%E3%83%81%E3%82%92%E5%BC%B7%E5%8C%96%EF%BC%9A%E7%A9%8D%E7%AE%97%E6%B8%A9%E5%BA%A6%E8%BF%BD%E8%B7%A1%E3%83%9E%E3%83%83%E3%83%97%EF%BC%88turfmap%EF%BC%89v2-0-0%E3%82%92%E5%85%AC%E9%96%8B%E3%81%97%E3%81%BE%E3%81%97%E3%81%9F" target="_blank" rel="noopener noreferrer">🆕 新しい解説</a>
+            <a href="https://youtu.be/ubLSNahqgoM" target="_blank" rel="noopener noreferrer">▶ 解説動画</a>
+        </div>
+    </div>
     <div class="header-banners" aria-label="関連リンク">
         <a class="header-banner-link" href="https://www.turf-tools.jp/services-4" target="_blank" rel="noopener noreferrer">
             <img class="header-banner-img" src="/output/banner_pr_size1.png" alt="芝管理のプロにPRしませんか？（ターフツールズ）">
