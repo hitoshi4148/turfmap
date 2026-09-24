@@ -11,6 +11,10 @@
 
 ## 更新履歴
 
+### v2.0.3
+
+- ヘッダー（積算温度の説明バー）に芝しごと公式解説ページへのリンク「【公式解説】」を追加し、【公式解説】【新しい解説】【▶解説動画】の順に表示
+
 ### v2.0.2
 
 - フッターのターフプールリンクを `https://www.turf-tools.jp/portal/turfpool/` に更新（芝しごとポータル配下の本番 URL）
@@ -237,7 +241,7 @@ agromap/
 ├── app.py                 # Flask アプリ（トップページ・API）
 ├── database.py            # PostgreSQL アクセス
 ├── output/
-│   ├── index.html         # メイン UI（v2.0.2）
+│   ├── index.html         # メイン UI（v2.0.3）
 │   └── animated_map.html  # マップ（iframe）
 ├── data/
 │   ├── pests.json         # 害虫マスタ定義
